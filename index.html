@@ -24,13 +24,14 @@
             {
                 group: 'SCREEN STORYBOARD',
                 items: [
-                    { id: 'SCR-01', label: '노점 검색 (거래 · 시세 조회)', href: '01_stall_search.html' }
+                    { id: 'SCR-01', label: '노점 검색 (거래 · 시세 조회)', href: '01_stall_search.html' },
+                    { id: 'SCR-02', label: '이용 제한 페이지', href: '02_restrict.html' }
                 ]
             },
             {
                 group: 'ADMIN',
                 items: [
-                    { id: 'ADM-01', label: '노점 검색 제한 로그', href: '02_admin.html' }
+                    { id: 'ADM-01', label: '노점 검색 제한 로그', href: '03_admin.html' }
                 ]
             }
         ];
@@ -244,6 +245,16 @@
                     .pol-msg td { font-size: 12.5px; }
                     .pol-msg .pol-grp { white-space: normal; }
                     .pol-msg .pol-id code { white-space: nowrap; font-size: 10px; }
+
+                    /* v17 — 이용 제한 페이지 미리보기 */
+                    .pm-browser { border: 1px solid #CBD5E1; border-radius: 8px; overflow: hidden; background: #FFFFFF; }
+                    .pm-url { display: block; padding: 7px 10px; background: #E2E8F0; font-size: 10.5px; color: #475569; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+                    .pm-url i { font-size: 9px; margin-right: 4px; }
+                    .pm-browser .pm-page { border: 0; border-radius: 0; padding: 24px 18px; gap: 6px; }
+                    .pm-page.rs > i { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #FEF3C7; color: #B45309; font-size: 16px; margin-bottom: 4px; }
+                    .pm-page.rs strong { font-size: 14px; }
+                    .pm-page.rs .pm-btn { margin-top: 8px; }
+                    .pol td.pol-act[rowspan] { vertical-align: middle; }
                 </style>
                 <div class="cv-sec">
                     <h3 class="cv-h3"><span class="no">1</span>현재 CF 정책 → 변경</h3>
@@ -266,12 +277,12 @@
                                 <tr>
                                     <td><strong>2차</strong></td>
                                     <td>1분 내 경로 접근 10회 초과 → 관리 챌린지</td>
-                                    <td>1분 내 <b>조회</b> 10회 초과 → <b>1분 검색 대기</b> (IP 기준)</td>
+                                    <td>1분 내 <b>조회</b> 10회 초과 → <b>1분 이용 제한</b> (계정 기준 · RO 웹 전체 메뉴)</td>
                                 </tr>
                                 <tr>
                                     <td><strong>3차</strong></td>
                                     <td>5분 내 경로 접근 30회 초과 → 1일 차단</td>
-                                    <td>5분 내 <b>조회</b> 30회 초과 → <b>1일 차단</b> (IP 기준)</td>
+                                    <td>5분 내 <b>조회</b> 30회 초과 → <b>1일 이용 제한</b> (계정 기준 · RO 웹 전체 메뉴)</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -301,31 +312,29 @@
                                     <td>Turnstile + 백엔드</td>
                                     <td>모든 조회</td>
                                     <td>검색 · 페이지 이동 · 상세 보기 <b>1회마다</b></td>
-                                    <td class="pol-act"><div class="pol-act-t"><b>Success! 전 검색 버튼 비활성</b> (E6) · 토큰 서버 검증 → 실패 시 조회 안 함 (E4)</div><div class="pm"><em class="pm-cap">확인 중 → 검색 버튼 비활성 (E6)</em><div class="pm-ts"><span><i class="fa-solid fa-spinner"></i> Verifying...</span><span class="pm-cf"><b>CLOUDFLARE</b><small>Privacy · Terms</small></span></div><div class="pm-search"><span>White Potion</span><em class="off"><i class="fa-solid fa-magnifying-glass"></i></em></div><em class="pm-cap">Success! → 검색 가능</em><div class="pm-ts ok"><span><i class="fa-solid fa-circle-check"></i> Success!</span><span class="pm-cf"><b>CLOUDFLARE</b><small>Privacy · Terms</small></span></div><div class="pm-search"><span>White Potion</span><em><i class="fa-solid fa-magnifying-glass"></i></em></div><em class="pm-cap">검증 실패 → 조회 안 함 (E4)</em><div class="pm-ts err"><span><i class="fa-solid fa-circle-xmark"></i> Verification failed. <u>Retry</u></span><span class="pm-cf"><b>CLOUDFLARE</b><small>Privacy · Terms</small></span></div></div></td>
+                                    <td class="pol-act"><div class="pol-act-t"><b>Success! 전 검색 버튼 비활성</b> (E4) · 토큰 서버 검증 → 실패 시 조회 안 함 (E2)</div><div class="pm"><em class="pm-cap">확인 중 → 검색 버튼 비활성 (E4)</em><div class="pm-ts"><span><i class="fa-solid fa-spinner"></i> Verifying...</span><span class="pm-cf"><b>CLOUDFLARE</b><small>Privacy · Terms</small></span></div><div class="pm-search"><span>White Potion</span><em class="off"><i class="fa-solid fa-magnifying-glass"></i></em></div><em class="pm-cap">Success! → 검색 가능</em><div class="pm-ts ok"><span><i class="fa-solid fa-circle-check"></i> Success!</span><span class="pm-cf"><b>CLOUDFLARE</b><small>Privacy · Terms</small></span></div><div class="pm-search"><span>White Potion</span><em><i class="fa-solid fa-magnifying-glass"></i></em></div><em class="pm-cap">검증 실패 → 조회 안 함 (E2)</em><div class="pm-ts err"><span><i class="fa-solid fa-circle-xmark"></i> Verification failed. <u>Retry</u></span><span class="pm-cf"><b>CLOUDFLARE</b><small>Privacy · Terms</small></span></div></div></td>
                                     <td>매 조회</td>
                                 </tr>
                                 <tr>
                                     <td><strong>2차 · 빈도 초과</strong></td>
                                     <td>백엔드</td>
-                                    <td>IP</td>
+                                    <td>계정 (AID)</td>
                                     <td><b>1분 내 조회 10회</b> 초과 → 11번째부터</td>
-                                    <td class="pol-act"><div class="pol-act-t">검색 일시 중지 · 남은 시간 표시 (E1 · 안내 ①)</div><div class="pm"><div class="pm-msg warn"><i class="fa-solid fa-hourglass-half"></i><b>Please wait a moment</b><span>You've searched too many times in a short period. Please wait 1 minute and try again.</span><em class="pm-wait">00:42</em></div></div></td>
+                                    <td class="pol-act" rowspan="3"><div class="pol-act-t"><b>RO 웹 전체 메뉴 차단</b> → 어느 메뉴로 들어가도 <b>이용 제한 페이지</b> (SCR-02 · 안내 ①)<br>세 단계 모두 같은 페이지 · 같은 문구 · 사유 · 남은 시간 표시 안 함 · 고객센터 링크만 제공 (고객센터는 차단 제외)</div><div class="pm"><div class="pm-browser"><span class="pm-url"><i class="fa-solid fa-lock"></i> ro.gnjoyamericas.com/en/…</span><div class="pm-page rs"><i class="fa-solid fa-user-lock"></i><strong>Access Temporarily Restricted</strong><span>Unusual activity has been detected on your account, so access to the website is temporarily restricted. Please try again later.</span><em class="pm-btn"><i class="fa-solid fa-headset"></i> CUSTOMER SUPPORT</em></div></div></div></td>
                                     <td>1분</td>
                                 </tr>
                                 <tr>
                                     <td><strong>3차 · 과다 조회</strong></td>
                                     <td>백엔드</td>
-                                    <td>IP</td>
+                                    <td>계정 (AID)</td>
                                     <td><b>5분 내 조회 30회</b> 초과 → 31번째부터</td>
-                                    <td class="pol-act"><div class="pol-act-t">노점 검색 차단 (E2 · 안내 ②)</div><div class="pm"><div class="pm-msg warn"><i class="fa-solid fa-ban"></i><b>Search is temporarily unavailable</b><span>Due to a high number of searches, Stall Shop search is temporarily unavailable. Please try again later.</span></div></div></td>
                                     <td>1일</td>
                                 </tr>
                                 <tr>
                                     <td><strong>보안 확인 실패</strong></td>
                                     <td>백엔드</td>
-                                    <td>IP</td>
+                                    <td>계정 (AID)</td>
                                     <td><b>10분 내 토큰 검증 5회</b> 실패</td>
-                                    <td class="pol-act"><div class="pol-act-t">노점 검색 차단 (E4 · 안내 ③)</div><div class="pm"><div class="pm-msg warn"><i class="fa-solid fa-shield-halved"></i><b>Security check failed</b><span>Security check failed too many times. Please try again later.</span></div></div></td>
                                     <td>1시간</td>
                                 </tr>
                             </tbody>
@@ -339,30 +348,26 @@
                         <table class="standard-table pol pol-msg">
                             <thead><tr><th style="width: 130px;">구분</th><th style="width: 150px;">항목 · 문구 ID</th><th>언어</th><th>문구</th></tr></thead>
                             <tbody>
-<tr class="pol-top"><td rowspan="8" class="pol-grp"><strong>① 2차 1분 대기 (E1)</strong><small>빈도 초과</small></td><td rowspan="4" class="pol-id"><b>제목</b><code>STALL_WAIT_TITLE</code></td><td class="pol-lang">KO</td><td>잠시만 기다려 주세요</td></tr>
-<tr class=""><td class="pol-lang">EN</td><td>Please wait a moment</td></tr>
-<tr class=""><td class="pol-lang">PT</td><td>Aguarde um momento</td></tr>
-<tr class=""><td class="pol-lang">ES</td><td>Espera un momento</td></tr>
-<tr class="pol-sub"><td rowspan="4" class="pol-id"><b>본문</b><code>STALL_WAIT_DESC</code></td><td class="pol-lang">KO</td><td>짧은 시간에 검색이 많아 1분 동안 검색할 수 없습니다. 잠시 후 다시 시도해 주세요.</td></tr>
-<tr class=""><td class="pol-lang">EN</td><td>You've searched too many times in a short period. Please wait 1 minute and try again.</td></tr>
-<tr class=""><td class="pol-lang">PT</td><td>Você fez muitas buscas em pouco tempo. Aguarde 1 minuto e tente novamente.</td></tr>
-<tr class=""><td class="pol-lang">ES</td><td>Has realizado demasiadas búsquedas en poco tiempo. Espera 1 minuto e inténtalo de nuevo.</td></tr>
-<tr class="pol-top"><td rowspan="8" class="pol-grp"><strong>② 3차 1일 차단 (E2)</strong><small>과다 조회</small></td><td rowspan="4" class="pol-id"><b>제목</b><code>STALL_BLOCK_TITLE</code></td><td class="pol-lang">KO</td><td>일시적으로 검색할 수 없습니다</td></tr>
-<tr class=""><td class="pol-lang">EN</td><td>Search is temporarily unavailable</td></tr>
-<tr class=""><td class="pol-lang">PT</td><td>Busca temporariamente indisponível</td></tr>
-<tr class=""><td class="pol-lang">ES</td><td>Búsqueda temporalmente no disponible</td></tr>
-<tr class="pol-sub"><td rowspan="4" class="pol-id"><b>본문</b><code>STALL_BLOCK_DESC</code></td><td class="pol-lang">KO</td><td>검색 시도가 많아 일시적으로 노점 검색을 이용할 수 없습니다. 잠시 후 다시 시도해 주세요.</td></tr>
-<tr class=""><td class="pol-lang">EN</td><td>Due to a high number of searches, Stall Shop search is temporarily unavailable. Please try again later.</td></tr>
-<tr class=""><td class="pol-lang">PT</td><td>Devido a um número elevado de buscas, a busca de lojas está temporariamente indisponível. Por favor, tente novamente mais tarde.</td></tr>
-<tr class=""><td class="pol-lang">ES</td><td>Debido a un alto número de búsquedas, la búsqueda de tiendas está temporalmente indisponible. Por favor, inténtelo nuevamente más tarde.</td></tr>
-<tr class="pol-top"><td rowspan="8" class="pol-grp"><strong>③ 보안 확인 실패 (E4)</strong><small>10분 내 5회 실패</small></td><td rowspan="4" class="pol-id"><b>제목</b><code>STALL_VERIFY_TITLE</code></td><td class="pol-lang">KO</td><td>보안 확인 실패</td></tr>
-<tr class=""><td class="pol-lang">EN</td><td>Security check failed</td></tr>
-<tr class=""><td class="pol-lang">PT</td><td>Falha na verificação de segurança</td></tr>
-<tr class=""><td class="pol-lang">ES</td><td>Error en la verificación de seguridad</td></tr>
-<tr class="pol-sub"><td rowspan="4" class="pol-id"><b>본문</b><code>STALL_VERIFY_DESC</code></td><td class="pol-lang">KO</td><td>보안 확인에 여러 번 실패해 일시적으로 이용할 수 없습니다. 잠시 후 다시 시도해 주세요.</td></tr>
-<tr class=""><td class="pol-lang">EN</td><td>Security check failed too many times. Please try again later.</td></tr>
-<tr class=""><td class="pol-lang">PT</td><td>A verificação de segurança falhou muitas vezes. Por favor, tente novamente mais tarde.</td></tr>
-<tr class=""><td class="pol-lang">ES</td><td>La verificación de seguridad falló demasiadas veces. Por favor, inténtelo nuevamente más tarde.</td></tr>
+<tr class="pol-top"><td rowspan="12" class="pol-grp"><strong>① 이용 제한 페이지</strong><small>2차 · 3차 · 보안 확인 실패 공통</small></td><td rowspan="4" class="pol-id"><b>제목</b><code>RO_RESTRICT_TITLE</code></td><td class="pol-lang">KO</td><td>이용이 일시적으로 제한되었습니다</td></tr>
+<tr class=""><td class="pol-lang">EN</td><td>Access Temporarily Restricted</td></tr>
+<tr class=""><td class="pol-lang">PT</td><td>Acesso temporariamente restrito</td></tr>
+<tr class=""><td class="pol-lang">ES</td><td>Acceso restringido temporalmente</td></tr>
+<tr class="pol-sub"><td rowspan="4" class="pol-id"><b>본문</b><code>RO_RESTRICT_DESC</code></td><td class="pol-lang">KO</td><td>비정상적인 이용이 감지되어 웹사이트 이용이 일시적으로 제한되었습니다. 잠시 후 다시 시도해 주세요.</td></tr>
+<tr class=""><td class="pol-lang">EN</td><td>Unusual activity has been detected on your account, so access to the website is temporarily restricted. Please try again later.</td></tr>
+<tr class=""><td class="pol-lang">PT</td><td>Detectamos atividade incomum na sua conta, por isso o acesso ao site está temporariamente restrito. Tente novamente mais tarde.</td></tr>
+<tr class=""><td class="pol-lang">ES</td><td>Hemos detectado actividad inusual en tu cuenta, por lo que el acceso al sitio web está restringido temporalmente. Inténtalo de nuevo más tarde.</td></tr>
+<tr class="pol-sub"><td rowspan="4" class="pol-id"><b>링크 버튼</b><code>RO_RESTRICT_CS</code></td><td class="pol-lang">KO</td><td>고객센터</td></tr>
+<tr class=""><td class="pol-lang">EN</td><td>Customer Support</td></tr>
+<tr class=""><td class="pol-lang">PT</td><td>Suporte ao Cliente</td></tr>
+<tr class=""><td class="pol-lang">ES</td><td>Atención al Cliente</td></tr>
+<tr class="pol-top"><td rowspan="8" class="pol-grp"><strong>② 로그인 안내 얼럿</strong><small>비로그인 검색 시도</small></td><td rowspan="4" class="pol-id"><b>본문</b><code>STALL_LOGIN_ALERT</code></td><td class="pol-lang">KO</td><td>로그인 후 노점 검색을 이용할 수 있습니다.</td></tr>
+<tr class=""><td class="pol-lang">EN</td><td>Please log in to use Stall Shop search.</td></tr>
+<tr class=""><td class="pol-lang">PT</td><td>Faça login para usar a busca de lojas.</td></tr>
+<tr class=""><td class="pol-lang">ES</td><td>Inicia sesión para usar la búsqueda de tiendas.</td></tr>
+<tr class="pol-sub"><td rowspan="4" class="pol-id"><b>버튼</b><code>STALL_LOGIN_OK</code></td><td class="pol-lang">KO</td><td>확인</td></tr>
+<tr class=""><td class="pol-lang">EN</td><td>OK</td></tr>
+<tr class=""><td class="pol-lang">PT</td><td>OK</td></tr>
+<tr class=""><td class="pol-lang">ES</td><td>Aceptar</td></tr>
                             </tbody>
                         </table>
                     </div>

@@ -13,13 +13,14 @@
             {
                 group: 'SCREEN STORYBOARD',
                 items: [
-                    { id: 'SCR-01', label: '노점 검색 (거래 · 시세 조회)', href: '01_stall_search.html' }
+                    { id: 'SCR-01', label: '노점 검색 (거래 · 시세 조회)', href: '01_stall_search.html' },
+                    { id: 'SCR-02', label: '이용 제한 페이지', href: '02_restrict.html' }
                 ]
             },
             {
                 group: 'ADMIN',
                 items: [
-                    { id: 'ADM-01', label: '노점 검색 제한 로그', href: '02_admin.html' }
+                    { id: 'ADM-01', label: '노점 검색 제한 로그', href: '03_admin.html' }
                 ]
             }
         ];

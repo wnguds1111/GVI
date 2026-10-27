@@ -1,4 +1,4 @@
-"""RO 노점 검색 보안 강화 — 02_admin.html (노점 검색 제한 로그) 빌더.
+"""RO 노점 검색 보안 강화 — 03_admin.html (노점 검색 제한 로그) 빌더.
 python -I -X utf8 build_admin.py <기획서 폴더>
 Gravity Admin Tools (MEM > 계정 관리) 화면 틀. 핀 ↔ 디스크립션 카드.
 """
@@ -11,16 +11,16 @@ RAIL = [("fa-user", "MEM", True), ("fa-gamepad", "GAME", False), ("fa-sack-dolla
         ("fa-globe", "WEB", False), ("fa-chart-pie", "CRM", False), ("fa-gear", "SET", False)]
 SUB = ["계정 조회", "게임블록 정보", "계정블록 정보", "Fraud 가입 제한 로그", "노점 검색 제한 로그", "도메인 블록", "로그 정보"]
 
-# 차단시간 · 처리 구분 · IP · AID · 해제시간 (최신순)
+# 차단시간 · 처리 구분 · AID · IP · 해제시간 (최신순) — 차단은 AID 기준, IP 는 차단 당시 접속 IP (참고)
 ROWS = [
     ("2026-10-27 14:22:05", "3차 · 1일 차단", "177.38.214.12", "2041877", "2026-10-28 14:22:05"),
     ("2026-10-27 14:05:47", "보안 확인 실패", "189.4.77.201", "1988302", "2026-10-27 15:05:47"),
     ("2026-10-27 13:41:19", "3차 · 1일 차단", "45.89.120.33", "2050114", "2026-10-28 13:41:19"),
     ("2026-10-27 13:30:02", "2차 · 1분 대기", "200.155.9.88", "1730021", "2026-10-27 13:31:02"),
-    ("2026-10-27 11:12:40", "3차 · 1일 차단", "177.38.214.12", "1655480", "2026-10-28 11:12:40"),
+    ("2026-10-27 11:12:40", "3차 · 1일 차단", "191.53.6.240", "2041877", "2026-10-28 11:12:40"),
     ("2026-10-27 09:58:11", "보안 확인 실패", "187.62.3.140", "2011736", "2026-10-27 10:58:11"),
     ("2026-10-27 09:20:33", "2차 · 1분 대기", "201.17.44.9", "1890245", "2026-10-27 09:21:33"),
-    ("2026-10-26 22:47:10", "2차 · 1분 대기", "45.89.120.33", "2050114", "2026-10-26 22:48:10"),
+    ("2026-10-26 22:47:10", "2차 · 1분 대기", "103.77.42.18", "2050114", "2026-10-26 22:48:10"),
     ("2026-10-26 08:15:27", "3차 · 1일 차단", "179.108.12.75", "1902663", "2026-10-27 08:15:27"),
 ]
 
@@ -48,11 +48,11 @@ def card(pid, label, title, tag, lis):
             f'<ul class="spec-list" data-edit="list:spec-{pid}">' + "".join(f"<li>{x}</li>" for x in lis) + "</ul></div>\n")
 
 
-HEAD = '<div class="ad-th"><span>차단시간</span><span>처리 구분</span><span>IP</span><span>AID</span><span>해제시간</span></div>'
+HEAD = '<div class="ad-th"><span>차단시간</span><span>처리 구분</span><span>AID</span><span>접속 IP</span><span>해제시간</span></div>'
 
 
 def table():
-    return HEAD + "".join(f'<div class="ad-tr">' + "".join(f"<span>{x}</span>" for x in r) + "</div>" for r in ROWS)
+    return HEAD + "".join(f'<div class="ad-tr">' + "".join(f"<span>{x}</span>" for x in (t, k, a, ip, end)) + "</div>" for t, k, ip, a, end in ROWS)
 
 
 def frame(main, modal=""):
@@ -70,7 +70,7 @@ def filt(pins=False, word="", open_=False):
     p1, p2, p3 = ("a1", "a2", "a3") if pins else (None, None, None)
     w = f'<span class="ad-in">{word}</span>' if word else '<span class="ad-in ph">검색어</span>'
     t_dd = dd(TYPES, "전체") if open_ else ""
-    k_dd = dd(["선택", "IP", "AID"], "IP") if open_ else ""
+    k_dd = dd(["선택", "AID", "IP"], "AID") if open_ else ""
     return (f'<div class="ad-filter">'
             f'<span class="ad-grp" data-pin-area>{pin(p1, "1")}<span class="ad-in date">2026-10-01 <i class="fa-regular fa-calendar"></i></span><span class="ad-in date">2026-10-27 <i class="fa-regular fa-calendar"></i></span></span>'
             f'<span class="ad-grp" data-pin-area>{pin(p2, "2")}<span class="ad-in sel">전체 <i class="fa-solid fa-chevron-down"></i>{t_dd}</span></span>'
@@ -96,11 +96,13 @@ def main_empty():
 
 C1 = (card("a1", "1", "기간", "Date", ["차단시간 기준 시작일 ~ 종료일 · 기본: 이번 달 1일 ~ 오늘", "날짜 칸 클릭 → 달력"])
       + card("a2", "2", "처리 구분", "Select", ["전체 · 2차 · 1분 대기 · 3차 · 1일 차단 · 보안 확인 실패", "기본 전체 → 고른 구분만 조회"])
-      + card("a3", "3", "검색 기준 · 검색어", "Search", ["선택 · IP · AID 중 고르고 검색어 입력 → 검색 (Enter 동일)",
+      + card("a3", "3", "검색 기준 · 검색어", "Search", ["선택 · AID · IP 중 고르고 검색어 입력 → 검색 (Enter 동일)",
                                                      "선택 상태에서 검색어 입력 → 기준 선택 안내 · 검색어 없으면 기간 · 처리 구분만으로 조회"])
       + card("a4", "4", "Download", "Action", ["현재 검색 조건의 전체 결과 엑셀 다운로드 (페이지 무관)"])
       + card("a5", "5", "제한 로그 목록", "List", ["차단시간 최신순 · 페이지당 20개",
-                                                 "처리 구분 = 2차 · 1분 대기 / 3차 · 1일 차단 / 보안 확인 실패 · 해제시간 = 자동 해제 시각"]))
+                                                 "처리 구분 = 2차 · 1분 대기 / 3차 · 1일 차단 / 보안 확인 실패 · 해제시간 = 자동 해제 시각",
+                                                 "차단은 계정(AID) 기준 · 접속 IP 는 차단 당시 IP (참고용 · IP 를 바꿔도 같은 AID 면 차단 유지)",
+                                                 "제한 중인 계정 = RO 웹 전체 메뉴 차단 → 이용 제한 페이지 (SCR-02)"]))
 C2 = card("a6", "6", "검색 결과 없음", "Empty", ["조건에 맞는 로그 없음 → '데이터가 존재하지 않습니다' · 전체 : 0"])
 
 SECS = [("adm01", "ADM-01", "① 제한 로그 목록", frame(main_list()), C1),
@@ -151,5 +153,5 @@ html = f"""<!DOCTYPE html>
 </body>
 </html>
 """
-(D / "02_admin.html").write_text(html, encoding="utf-8")
+(D / "03_admin.html").write_text(html, encoding="utf-8")
 print("ok", len(html))

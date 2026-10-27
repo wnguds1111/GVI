@@ -207,3 +207,59 @@
 
         .ss-tsw-l i.run { color: #64748B; }
         .ss-go.off { background: #CBD5E1; border-color: #CBD5E1; color: #FFFFFF; }
+
+        /* ── v15 탭 · 검색 배치: 폴더 탭 + 검색 상자 · 위젯은 실제 크기(300×65)로 탭 줄 오른쪽 ── */
+        .ss-hero { padding: 40px 0 0; }
+        .ss-title { max-width: 1140px; margin: 0 auto 20px; }
+        .ss-wrap { padding-top: 0; }
+        .ss-tabrow { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
+        .ss-ftabs { position: relative; display: flex; gap: 4px; }
+        .ss-ftab { display: inline-flex; align-items: center; gap: 8px; height: 46px; padding: 0 24px; border: 1px solid #CBD5E1; border-bottom: 0; border-radius: 8px 8px 0 0; background: #E2E8F0; font-size: 14px; font-weight: 800; color: #64748B; }
+        .ss-ftab.on { position: relative; height: 50px; background: #FFFFFF; color: #0F172A; box-shadow: inset 0 3px 0 #475569; }
+        .ss-ftab.on::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: #FFFFFF; }
+        .ss-panel { padding: 22px 24px; border: 1px solid #CBD5E1; border-radius: 0 8px 8px 8px; background: #FFFFFF; }
+        .ss-search { grid-template-columns: 200px 200px 1fr 96px 46px; }
+        .ss-search.m3 { grid-template-columns: 170px 170px 170px 1fr 96px 46px; }
+        .ss-tsw { width: 300px; max-width: 100%; height: 65px; margin: 0 0 8px; padding: 0 14px; flex-shrink: 0; }
+        .ss-tsw-l { font-size: 14px; }
+        .ss-tsw-l i { font-size: 24px; }
+        .ss-tsw-r b { font-size: 10px; }
+        .ss-tsw-r small { font-size: 9.5px; }
+        .ss-tsw.sm { width: 300px; height: 65px; margin: 0; padding: 0 14px; }
+        .ss-tsw.sm .ss-tsw-l { font-size: 14px; }
+        .ss-tsw.sm .ss-tsw-l i { font-size: 24px; }
+        .case-body .ss-tsw { margin: 0; }
+        .ss-body { padding-top: 30px; }
+        /* 상세 팝업: 위젯 왼쪽 · 닫기 오른쪽 한 줄 */
+        .ss-modal-head { align-items: flex-start; justify-content: space-between; }
+        .ss-modal .ss-tsw { margin: 0; }
+        .ss-modal.sm .ss-modal-head i { font-size: 18px; }
+        /* 반응형: 위젯(탭 위) → 폴더 탭 2칸 → 검색 상자 */
+        .ss-mo-hero { padding: 22px 16px 12px; }
+        .ss-title.sm { margin-bottom: 0; }
+        .ss-mo-ts { padding: 0 16px 12px; }
+        .ss-mo-box { margin: 0 16px; }
+        .ss-mo-ftabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+        .ss-mo-ftabs span { display: flex; align-items: center; justify-content: center; gap: 6px; height: 42px; border: 1px solid #CBD5E1; border-bottom: 0; border-radius: 8px 8px 0 0; background: #E2E8F0; font-size: 12px; font-weight: 800; color: #64748B; }
+        .ss-mo-ftabs span.on { position: relative; background: #FFFFFF; color: #0F172A; box-shadow: inset 0 3px 0 #475569; }
+        .ss-mo-ftabs span.on::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: #FFFFFF; }
+        .ss-mo-panel { display: flex; flex-direction: column; gap: 8px; padding: 12px; border: 1px solid #CBD5E1; border-radius: 0 0 8px 8px; background: #FFFFFF; }
+        .ss-mo-panel .ss-mo-row { grid-template-columns: 1fr 52px 44px; }
+        .mo-frame--tab .ss-mo-box, .mo-frame--tab .ss-mo-ts { max-width: 720px; margin-left: auto; margin-right: auto; }
+        .mo-frame--tab .ss-mo-ts { padding: 0 0 12px; }
+
+        /* ── v16 비로그인 검색 → 로그인 얼럿 ── */
+        .ss-alert-wrap { position: relative; }
+        .ss-alert-dim { position: absolute; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding-top: 380px; background: rgba(15, 23, 42, 0.45); }
+        .ss-alert { position: relative; width: 400px; padding: 30px 26px 22px; border-radius: 10px; background: #FFFFFF; text-align: center; box-shadow: 0 12px 32px rgba(15, 23, 42, 0.25); }
+        .ss-alert > span:not(.pin) { display: block; font-size: 15px; font-weight: 700; line-height: 1.6; color: #0F172A; }
+        .ss-alert-btn { display: flex; justify-content: center; margin-top: 22px; }
+        .ss-alert .ss-btn { min-width: 120px; }
+        .ss-alert.sm { width: 300px; padding: 24px 18px 18px; }
+        .ss-alert.sm > span:not(.pin) { font-size: 13.5px; }
+        .ss-mo .ss-alert-dim, .mo-frame .ss-alert-dim { padding-top: 260px; }
+
+        /* ── v20 폴더 탭 높이 = Turnstile 위젯 높이(65) · 위아래 선 맞춤 ── */
+        .ss-tabrow { align-items: stretch; }
+        .ss-ftab, .ss-ftab.on { height: 65px; padding: 0 28px; font-size: 15px; }
+        .ss-tabrow .ss-tsw { margin: 0 0 -1px; }

@@ -35,7 +35,7 @@ def ro_gnb():
 
 
 def ts_widget(p=None, state="ok", compact=False):
-    """Turnstile 위젯 — 한국 노점 사이트처럼 탭 위에 항상 표시 (Managed 모드)."""
+    """Turnstile 위젯 — 실제 크기(300×65) · PC 는 탭 줄 오른쪽, 모바일은 탭 위."""
     pp = pin(p, p[1:], "top: -12px; left: -12px;") if p else ""
     left = {"ok": '<i class="fa-solid fa-circle-check ok"></i> Success!',
             "run": '<i class="fa-solid fa-spinner run"></i> Verifying...',
@@ -44,13 +44,18 @@ def ts_widget(p=None, state="ok", compact=False):
             '<span class="ss-tsw-r"><b>CLOUDFLARE</b><small><u>Privacy</u> · <u>Terms</u></small></span></div>')
 
 
-def hero(p=None, ts="", tab="trading"):
+def hero():
+    return ('<div class="ss-hero"><span class="ss-bg-label">배경 이미지 (현행 유지)</span>'
+            '<div class="ss-title"><i class="fa-regular fa-comment-dots"></i> Stall Shop</div></div>')
+
+
+def tabs(p=None, tab="trading", ts=""):
+    """검색 상자에 붙는 폴더 탭 · 오른쪽 끝에 Turnstile 위젯 (로그인 상태)."""
     pp = pin(p, p[1:], "top: -12px; left: -12px;") if p else ""
     a, b = ("on", "") if tab == "trading" else ("", "on")
-    return (f'<div class="ss-hero"><span class="ss-bg-label">배경 이미지 (현행 유지)</span>'
-            '<div class="ss-title"><i class="fa-regular fa-comment-dots"></i> Stall Shop</div>'
-            f'{ts}<div class="ss-tabs" data-pin-area>{pp}<span class="{a}"><i class="fa-solid fa-sack-dollar"></i> Transaction Item Inquiry</span>'
-            f'<span class="{b}"><i class="fa-solid fa-chart-line"></i> Item Market Price Inquiry</span></div></div>')
+    return (f'<div class="ss-tabrow"><div class="ss-ftabs" data-pin-area>{pp}'
+            f'<span class="ss-ftab {a}"><i class="fa-solid fa-sack-dollar"></i> Transaction Item Inquiry</span>'
+            f'<span class="ss-ftab {b}"><i class="fa-solid fa-chart-line"></i> Item Market Price Inquiry</span></div>{ts}</div>')
 
 
 def search(word="", p=None, off=False, tab="trading"):
@@ -69,25 +74,17 @@ def foot():
             '<div class="ss-copy">© Gravity Co.,Ltd &amp; Lee Myoungjin (Studio DTDS), All Rights Reserved. Published by Gravity Interactive, Inc.</div>')
 
 
-def lock_box(p=None, p2=None, compact=False):
-    """비로그인 결과 영역 — 로그인 안내 + LOGIN · SIGN UP (보안 확인은 로그인 후 ② 에서)."""
-    pp = pin(p, p[1:], "top: -12px; left: -12px;") if p else ""
-    pq = pin(p2, p2[1:], "top: 8px; left: -26px;") if p2 else ""
-    return (f'<div class="ss-lock{" sm" if compact else ""}" data-pin-area>{pp}<span class="ss-lock-ic"><i class="fa-solid fa-lock"></i></span>'
-            '<b>Log in to search stall shops</b><span>Stall shop search is available to GNJOY Americas members.</span>'
-            f'<div class="ss-btns" style="position: relative;">{pq}<span class="ss-btn">LOGIN</span><span class="ss-btn ss-btn--line">SIGN UP</span></div></div>')
-
-
-def verify_box(p=None, p2=None, state="idle"):
+def login_alert(p=None, p2=None, compact=False):
+    """비로그인 검색 시도 → 화면 가운데 얼럿 (버튼 OK 하나)."""
     pp = pin(p, p[1:], "top: -12px; left: -12px;") if p else ""
     pq = pin(p2, p2[1:], "top: -6px; left: -26px;") if p2 else ""
-    if state == "fail":
-        widget = '<div class="ss-widget err"><i class="fa-solid fa-circle-xmark"></i> Verification failed. Please try again. <span class="ss-retry">Retry</span></div>'
-    else:
-        widget = '<div class="ss-widget"><span class="ss-chk"></span> Verify you are human <span class="ss-widget-brand">보안 확인 위젯</span></div>'
-    return (f'<div class="ss-verify" data-pin-area>{pp}<span class="ss-lock-ic"><i class="fa-solid fa-shield-halved"></i></span>'
-            '<b>Quick security check</b><span>Please complete the security check to start searching.</span>'
-            f'{widget}<div class="ss-legal" style="position: relative;">{pq}Protected by Cloudflare Turnstile · <u>Privacy</u> · <u>Terms</u></div></div>')
+    return (f'<div class="ss-alert-dim"><div class="ss-alert{" sm" if compact else ""}" data-pin-area>{pp}'
+            '<span>Please log in to use Stall Shop search.</span>'
+            f'<div class="ss-alert-btn" style="position: relative;">{pq}<span class="ss-btn">OK</span></div></div></div>')
+
+
+def with_alert(screen, alert):
+    return f'<div class="ss-alert-wrap">{screen}{alert}</div>'
 
 
 def guide_box(compact=False):
@@ -136,8 +133,9 @@ def msg_box(ic, title, body, btn=None, tone=""):
 
 def screen_pc(logged, body, word="", pins=None, off=False, ts="", tab="trading"):
     pins = pins or {}
-    return (f'{gnjoy_bar(logged, pins.get("gnb"))}{ro_gnb()}<div class="ss-page">{hero(pins.get("tab"), ts, tab)}'
-            f'<div class="ss-wrap">{search(word, pins.get("search"), off, tab)}<div class="ss-body">{body}</div></div>{foot()}</div>')
+    return (f'{gnjoy_bar(logged, pins.get("gnb"))}{ro_gnb()}<div class="ss-page">{hero()}'
+            f'<div class="ss-wrap"><div class="ss-box">{tabs(pins.get("tab"), tab, ts)}<div class="ss-panel">{search(word, pins.get("search"), off, tab)}</div></div>'
+            f'<div class="ss-body">{body}</div></div>{foot()}</div>')
 
 
 def case(pid, label, title, when, lead, inner):
@@ -147,24 +145,17 @@ def case(pid, label, title, when, lead, inner):
 
 
 CASES = "".join([
-    case("e1", "E1", "2차 · 1분 대기", "1분 내 조회 10회 초과 (11번째부터) · 결과 영역 대체",
-         "1분 동안 검색해도 미들서버를 부르지 않고 남은 시간만 보여 줍니다. 지나면 자동으로 다시 검색할 수 있습니다.",
-         msg_box("fa-hourglass-half", "Please wait a moment", "You've searched too many times in a short period. Please wait 1 minute and try again.",
-                 None, "warn").replace("</div>", '<div class="ss-wait">00:42</div></div>', 1)),
-    case("e2", "E2", "3차 · 1일 차단", "5분 내 조회 30회 초과 (31번째부터) · 결과 영역 대체",
-         "검색 버튼은 눌러도 미들서버를 부르지 않고 이 안내만 보입니다.",
-         msg_box("fa-ban", "Search is temporarily unavailable", "Due to a high number of searches, Stall Shop search is temporarily unavailable. Please try again later.", None, "warn")),
-    case("e3", "E3", "검색어 오류", "검색어 2글자 미만 · 검색어 없이 검색 · 검색줄 아래",
+    case("e1", "E1", "검색어 오류", "검색어 2글자 미만 · 검색어 없이 검색 · 검색줄 아래",
          "미들서버를 부르지 않고 입력칸 아래에 안내합니다.",
          '<div class="ss-search mini"><span class="ss-in err">P</span><span class="ss-go"><i class="fa-solid fa-magnifying-glass"></i></span></div>'
          '<div class="ss-err">Please enter at least 2 characters.</div>'),
-    case("e4", "E4", "보안 확인 실패", "Turnstile 검증 실패 · 만료 · 이미 쓴 토큰 · 탭 위 위젯 대체",
+    case("e2", "E2", "보안 확인 실패", "Turnstile 검증 실패 · 만료 · 이미 쓴 토큰 · 탭 줄 오른쪽 위젯 대체",
          "Retry 로 토큰을 새로 받아 같은 조건으로 다시 조회합니다.",
          ts_widget(state="fail")),
-    case("e5", "E5", "검색 결과 0건", "조건에 맞는 노점이 없을 때 · 결과 영역 대체 (현행 유지)",
+    case("e3", "E3", "검색 결과 0건", "조건에 맞는 노점이 없을 때 · 결과 영역 대체 (현행 유지)",
          "현행 문구 그대로입니다.",
          '<div class="ss-empty">No records found.</div>'),
-    case("e6", "E6", "Turnstile 확인 중", "진입 직후 · 조회 직후 위젯이 다시 도는 동안 · 탭 위 위젯 + 검색 버튼",
+    case("e4", "E4", "Turnstile 확인 중", "진입 직후 · 조회 직후 위젯이 다시 도는 동안 · 탭 줄 오른쪽 위젯 + 검색 버튼",
          "Success! 가 뜨기 전에는 검색 버튼이 비활성이라 검색할 수 없습니다.",
          ts_widget(state="run") + '<div class="ss-search mini" style="margin-top: 12px;"><span class="ss-in">White Potion</span><span class="ss-go off"><i class="fa-solid fa-magnifying-glass"></i></span></div>'),
 ])
@@ -177,54 +168,56 @@ def case_zone():
 
 
 # ───────────────────────── 화면 3개 ─────────────────────────
-S1 = screen_pc(False, lock_box("p4", "p5"), pins={"gnb": "p1", "tab": "p2", "search": "p3"})
+S1 = with_alert(screen_pc(False, guide_box(), word="White Potion", pins={"gnb": "p1", "tab": "p2", "search": "p3"}, ts=ts_widget()), login_alert("p4", "p5"))
 S2 = screen_pc(True, guide_box(), pins={"gnb": "p6"}, ts=ts_widget("p7"))
 S3 = screen_pc(True, results("p8", "p9"), word="as", ts=ts_widget(), tab="market") + case_zone()
 
 C1 = (card("p1", "1", "로그인 · 회원가입 (헤더)", "Header", ["Login → 로그인 페이지 → 로그인 후 보던 화면(검색 조건 그대로)으로 복귀",
                                                         "Sign Up → 회원가입 새 창"])
-      + card("p2", "2", "탭", "Tab", ["Item Market Price Inquiry 탭도 같은 규칙 (로그인 → 조회마다 Turnstile)"])
-      + card("p3", "3", "검색줄 (비로그인)", "Search", ["거래 유형 · 서버 · 검색어는 그대로 입력 가능",
-                                                   "검색 클릭 → 결과 대신 4 안내 (미들서버 조회 안 함)"])
-      + card("p4", "4", "로그인 안내", "Lock", ["비로그인 진입 시 결과 자리에 표시",
-                                              "검색 조건이 붙은 주소로 들어와도 동일 · 서버에서 데이터 조회 안 함"])
-      + card("p5", "5", "LOGIN · SIGN UP", "Action", ["LOGIN → 로그인 페이지 → 로그인 후 같은 검색 조건으로 복귀 (조건이 있으면 바로 조회)",
-                                                    "SIGN UP → 회원가입 새 창"]))
+      + card("p2", "2", "탭 · Turnstile 위젯", "Tab", ["검색 상자에 붙은 폴더 탭 · 선택한 탭만 진하게 · Item Market Price Inquiry 탭도 같은 규칙",
+                                                "비로그인도 탭 줄 오른쪽에 Turnstile 위젯 표시 (로그인 상태와 같은 자리 · 진입 시 실행)",
+                                                "Success! 전 검색 버튼 비활성 (E4 와 같음) → Success! 후 검색 시도 → 4 얼럿 (조회 안 함)"])
+      + card("p3", "3", "검색줄 (비로그인)", "Search", ["진입 화면은 현행 그대로 (Stall Shop Guide) · 거래 유형 · 서버 · 검색어 입력 가능",
+                                                   "검색 버튼 · Enter → 4 얼럿 (미들서버 조회 안 함)",
+                                                   "검색 조건이 붙은 주소로 들어와도 조회 안 함 · 결과 자리는 Guide 그대로"])
+      + card("p4", "4", "로그인 안내 얼럿", "Alert", ["비로그인 상태에서 검색을 시도할 때마다 표시 (탭 이동만으로는 안 뜸)",
+                                                  "버튼은 OK 하나 · 문구 STALL_LOGIN_ALERT (표지 안내 ②)"])
+      + card("p5", "5", "OK", "Action", ["OK → 바로 로그인 페이지 → 로그인 후 노점 검색으로 복귀",
+                                        "복귀 시 탭 · 검색 조건 유지 → Turnstile Success! 후 검색 (2 화면)"]))
 C2 = (card("p6", "6", "로그인 상태 헤더", "Header", ["계정명 + Logout만 표시", "Logout → 비로그인 상태(1 화면)로"])
-      + card("p7", "7", "Turnstile 위젯", "Verify", ["로그인 상태에서 탭 위에 항상 표시 (한국 노점 사이트와 같은 Managed 모드)",
-                                                 "Success! 가 떠야 검색 버튼 활성 · 확인 중에는 검색 · Enter 막음 (E6)",
+      + card("p7", "7", "Turnstile 위젯", "Verify", ["로그인 전후 모두 탭 줄 오른쪽(검색 버튼 위)에 항상 표시 · 실제 위젯 크기 300×65",
+                                                 "Success! 가 떠야 검색 버튼 활성 · 확인 중에는 검색 · Enter 막음 (E4)",
                                                  "진입 · 조회(검색 · 페이지 이동 · 상세)마다 실행 → Success! 토큰 1개로 조회 · 서버 검증",
-                                                 "Cloudflare 가 요구하면 위젯 안에 체크박스 · 실패 → E4"]))
+                                                 "Cloudflare 가 요구하면 위젯 안에 체크박스 · 실패 → E2"]))
 C3 = (card("p8", "8", "조회 결과 (시세 조회 예시)", "List", ["결과 바(건수 · 정렬 · 개수 · 보기 전환) · 카드 구성은 현행 유지 · 거래 아이템 조회도 같은 규칙",
-                                            "조회마다 Turnstile 검증 + IP별 조회 수 집계 → 2차 E1 · 3차 E2 · 카드 클릭 → 4 상세 팝업",
+                                            "조회마다 Turnstile 검증 + 계정(AID)별 조회 수 집계 → 2차 · 3차 초과 시 이용 제한 페이지(SCR-02)로 이동 · 카드 클릭 → 상세 팝업 (내용 현행 유지 · 열 때도 Turnstile · 조회 1회)",
                                             "로그아웃 상태로 조회 → 1 화면으로"])
       + card("p9", "9", "페이지 이동", "Pager", ["페이지당 20개 고정 (주소의 limit 값 무시)",
                                                "최대 50페이지 · 페이지 이동 · 정렬 · 개수 변경도 조회 1회 (Turnstile 실행 · 횟수 포함)"])
-      + card("e1", "E1", "2차 · 1분 대기", "Case", ["1분 내 조회 10회 초과 → 11번째부터 1분 동안 검색 중지 · 남은 시간 표시", "1분 지나면 자동 해제 · 대기 중 시도도 3차 횟수에 포함"])
-      + card("e2", "E2", "3차 · 1일 차단", "Case", ["5분 내 조회 30회 초과 → 1일 노점 검색 차단 (IP 기준)", "차단 중 조회 → 이 안내만 (미들서버 조회 안 함)"])
-      + card("e3", "E3", "검색어 오류", "Case", ["2글자 미만 · 빈 검색 → 입력칸 아래 안내 · 검색 안 함"])
-      + card("e4", "E4", "보안 확인 실패", "Case", ["위젯 안 Retry → Turnstile 다시 실행 → 같은 조건 다시 조회", "10분 내 5회 실패 → 1시간 노점 검색 차단 (표지 안내 ③)"])
-      + card("e5", "E5", "검색 결과 0건", "Case", ["현행 문구 유지 · 조회 횟수에는 포함"])
-      + card("e6", "E6", "Turnstile 확인 중", "Case", ["위젯 Success! 전까지 검색 버튼 비활성 · Enter 도 검색 안 됨",
+      + card("e1", "E1", "검색어 오류", "Case", ["2글자 미만 · 빈 검색 → 입력칸 아래 안내 · 검색 안 함"])
+      + card("e2", "E2", "보안 확인 실패", "Case", ["위젯 안 Retry → Turnstile 다시 실행 → 같은 조건 다시 조회", "10분 내 5회 실패 → 1시간 이용 제한 → 이용 제한 페이지(SCR-02)"])
+      + card("e3", "E3", "검색 결과 0건", "Case", ["현행 문구 유지 · 조회 횟수에는 포함"])
+      + card("e4", "E4", "Turnstile 확인 중", "Case", ["위젯 Success! 전까지 검색 버튼 비활성 · Enter 도 검색 안 됨",
                                                       "조회가 끝나면 위젯 다시 실행 → Success! 뜨면 다음 검색 가능"]))
 
 
 # ───────────────────────── 반응형 ─────────────────────────
-def mo_head(logged, tab="trading"):
+def mo_head(logged):
     acc = "fa-circle-user" if logged else "fa-user"
-    a, b = ("on", "") if tab == "trading" else ("", "on")
     return (f'<div class="ss-mo-gnb"><i class="fa-solid fa-bars"></i><span class="ss-ro-logo sm">RO 로고</span><i class="fa-regular {acc}"></i></div>'
-            '<div class="ss-mo-hero"><div class="ss-title sm"><i class="fa-regular fa-comment-dots"></i> Stall Shop</div>'
-            f'<div class="ss-mo-tabs"><span class="{a}"><i class="fa-solid fa-sack-dollar"></i> Transaction Item Inquiry</span>'
-            f'<span class="{b}"><i class="fa-solid fa-chart-line"></i> Item Market Price Inquiry</span></div></div>')
+            '<div class="ss-mo-hero"><div class="ss-title sm"><i class="fa-regular fa-comment-dots"></i> Stall Shop</div></div>')
 
 
 def mo_search(word="", tab="trading"):
+    """폴더 탭 2칸 + 검색 상자 (필터 1줄 · 검색어 1줄)."""
+    a, b = ("on", "") if tab == "trading" else ("", "on")
     val = f'<span class="ss-in">{word}</span>' if word else '<span class="ss-in ph">Please enter an item name.</span>'
     cols = [("Transaction", "Sell"), ("Server", "Freya")] if tab == "trading" else [("Item", "All"), ("Server", "Freya"), ("Period", "All")]
     f = "".join(f'<span><small>{k}</small><b>{v}</b></span>' for k, v in cols)
-    return (f'<div class="ss-mo-search"><div class="ss-mo-filter">{f}<i class="fa-solid fa-chevron-down"></i></div>'
-            f'<div class="ss-mo-row">{val}<span class="ss-go"><i class="fa-solid fa-magnifying-glass"></i></span><span class="ss-reset"><i class="fa-solid fa-rotate-right"></i></span></div></div>')
+    return (f'<div class="ss-mo-box"><div class="ss-mo-ftabs"><span class="{a}"><i class="fa-solid fa-sack-dollar"></i> Transaction Item</span>'
+            f'<span class="{b}"><i class="fa-solid fa-chart-line"></i> Market Price</span></div>'
+            f'<div class="ss-mo-panel"><div class="ss-mo-filter">{f}<i class="fa-solid fa-chevron-down"></i></div>'
+            f'<div class="ss-mo-row">{val}<span class="ss-go"><i class="fa-solid fa-magnifying-glass"></i></span><span class="ss-reset"><i class="fa-solid fa-rotate-right"></i></span></div></div></div>')
 
 
 def mo_results():
@@ -233,7 +226,7 @@ def mo_results():
 
 def mo_frame(logged, body, word="", ts=False, tab="trading"):
     w = f'<div class="ss-mo-ts">{ts_widget(compact=True)}</div>' if ts else ""
-    return (f'<div class="ss-mo">{mo_head(logged, tab)}{w}{mo_search(word, tab)}<div class="ss-mo-body">{body}</div>'
+    return (f'<div class="ss-mo">{mo_head(logged)}{w}{mo_search(word, tab)}<div class="ss-mo-body">{body}</div>'
             '<div class="ss-mo-foot">© Gravity Co.,Ltd &amp; Lee Myoungjin (Studio DTDS)</div></div>')
 
 
@@ -242,39 +235,9 @@ def devices(tab, mo, tn, mn):
             f'<div class="mo-device" data-mo-w="360"><div class="mo-device-label"><span class="mo-dev-name">Mobile</span><span class="mo-dev-size">360</span><span class="mo-dev-note">{mn}</span></div><div class="mo-frame mo-frame--mo"><div class="mo-statusbar"></div>{mo}</div></div>')
 
 
-M1 = devices(mo_frame(False, lock_box(compact=True)), mo_frame(False, lock_box(compact=True)), "검색줄 2줄", "검색줄 2줄 · 안내 문구 줄바꿈")
-M2 = devices(mo_frame(True, guide_box(compact=True), ts=True), mo_frame(True, guide_box(compact=True), ts=True), "위젯 = 탭 아래", "위젯 = 탭 아래 · 안내 이미지 생략")
+M1 = devices(with_alert(mo_frame(False, guide_box(compact=True), "White Potion", ts=True), login_alert(compact=True)), with_alert(mo_frame(False, guide_box(compact=True), "White Potion", ts=True), login_alert(compact=True)), "얼럿 = 화면 가운데", "얼럿 = 화면 가운데 · 폭 300")
+M2 = devices(mo_frame(True, guide_box(compact=True), ts=True), mo_frame(True, guide_box(compact=True), ts=True), "위젯 = 탭 위", "위젯 = 탭 위 · 안내 이미지 생략")
 M3 = devices(mo_frame(True, mo_results(), "as", ts=True, tab="market"), mo_frame(True, mo_results(), "as", ts=True, tab="market"), "카드 2열", "카드 1열 (현행)")
-
-
-# ───────────────────────── ④ 상세 팝업 ─────────────────────────
-DAYS = [("26/10/26", "13,999", "40,000", "24,865", "3422"), ("25/10/26", "14,999", "79,999", "22,155", "1727"),
-        ("24/10/26", "18,000", "100,000", "25,072", "2431"), ("23/10/26", "16,000", "89,999", "25,830", "1767"),
-        ("22/10/26", "18,000", "115,000", "26,860", "1003")]
-
-
-def detail_modal(p=None, p2=None, compact=False):
-    """검색 결과에서 연 상세 팝업 — 맨 위 Turnstile 위젯, 아래 내용은 현행 그대로."""
-    pq = pin(p2, p2[1:], "top: -12px; left: -12px;") if p2 else ""
-    rows = "".join(f'<div class="ss-dt-tr"><span>{d}</span><span class="r v">{a} z</span><span class="r v">{b} z</span><span class="r v">{c} z</span><span class="r">{q}</span></div>'
-                   for d, a, b, c, q in (DAYS[:3] if compact else DAYS))
-    return (f'<div class="ss-modal{" sm" if compact else ""}"><div class="ss-modal-head"><i class="fa-solid fa-xmark"></i></div>'
-            f'{ts_widget(p, compact=compact)}'
-            f'<div class="ss-dt" data-pin-area>{pq}<div class="ss-dt-asof">Latest market price information as of 26/10/26</div>'
-            '<div class="ss-dt-mm"><span class="k">Minimum</span><span class="v min">5,000 z</span><span class="k">Maximum</span><span class="v max">199,999 z</span></div>'
-            '<div class="ss-dt-chart">가격 추이 그래프 (Minimum · Maximum · Avg · 현행)</div>'
-            '<div class="ss-dt-th"><span>Date</span><span class="r">Minimum</span><span class="r">Maximum</span><span class="r">Avg</span><span class="r">qty</span></div>'
-            f'{rows}</div></div>')
-
-
-S4 = f'<div class="ss-dim">{detail_modal("p10", "p11")}</div>'
-C4 = (card("p10", "10", "Turnstile 위젯 (팝업 상단)", "Verify", ["상세 팝업을 열 때마다 맨 위에서 실행 → Success! 후 상세 데이터 조회 (조회 1회)",
-                                                          "실패 → 위젯 Retry · 아래 내용은 비워 둠 (E4 와 같은 처리)",
-                                                          "2차 · 3차 걸린 상태 → 내용 자리에 E1 · E2 안내"])
-      + card("p11", "11", "상세 내용", "Detail", ["거래 아이템 상세 · 시세 상세 모두 내용은 현행 유지",
-                                                 "닫기(X) → 검색 결과로 · 다시 열면 Turnstile 다시 실행"]))
-M4 = devices(f'<div class="ss-mo ss-dim">{detail_modal()}</div>', f'<div class="ss-mo ss-dim sm">{detail_modal(compact=True)}</div>',
-             "팝업 폭 720", "전체 화면 팝업 · 표 3줄 예시")
 
 
 def section(sid, code, label, canvas):
@@ -282,10 +245,9 @@ def section(sid, code, label, canvas):
             f'<div class="canvas-card"><div class="wf-hub-canvas">{canvas}</div></div></div>')
 
 
-SECS = [("screen01", "SCR-01", "① 비로그인 · 잠금", S1, C1, M1),
+SECS = [("screen01", "SCR-01", "① 비로그인 · 검색 시 로그인 안내", S1, C1, M1),
         ("screen02", "SCR-01", "② 로그인 · 검색 전", S2, C2, M2),
-        ("screen03", "SCR-01", "③ 조회 결과 (시세) · 예외 케이스", S3, C3, M3),
-        ("screen04", "SCR-01", "④ 상세 팝업", S4, C4, M4)]
+        ("screen03", "SCR-01", "③ 조회 결과 (시세) · 예외 케이스", S3, C3, M3)]
 
 CSS = (pathlib.Path(__file__).with_name("ss.css")).read_text(encoding="utf-8")
 TREE = pathlib.Path(__file__).with_name("tree.js").read_text(encoding="utf-8")
