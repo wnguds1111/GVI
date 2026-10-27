@@ -1,0 +1,72 @@
+        /* 상단바 숨김 */
+        .viewport-bar > .vp-res-group, .vp-scale, .vp-panel-btn, .vp-edit-btn, .topbar-page-nav { display: none !important; }
+
+        /* ── Gravity Admin Tools 틀 ── */
+        .ad { position: relative; display: flex; min-height: 760px; background: #F8FAFE; font-size: 12px; color: #0F172A; }
+        .ad-side { width: 270px; flex-shrink: 0; background: #F1F4FA; display: flex; flex-direction: column; }
+        .ad-logo { display: flex; align-items: center; gap: 12px; height: 84px; padding: 0 16px; background: #F1F4FA; }
+        .ad-logo b { font-size: 14px; font-weight: 900; letter-spacing: 2px; color: #1E293B; }
+        .ad-logo em { font-style: normal; font-size: 15px; font-weight: 800; color: #3B6FE8; padding-right: 12px; border-right: 1px solid #CBD5E1; }
+        .ad-lang { font-size: 11.5px; font-weight: 700; color: #334155; white-space: nowrap; }
+        .ad-logo b, .ad-logo em { white-space: nowrap; }
+        .ad-lang i { font-size: 11px; color: #94A3B8; }
+        .ad-side-body { flex: 1; display: flex; }
+        .ad-rail { width: 80px; padding-top: 24px; background: #4F7FF0; border-radius: 0 28px 0 0; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+        .ad-rail-i { width: 52px; height: 52px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #FFFFFF; }
+        .ad-rail-i i { font-size: 15px; }
+        .ad-rail-i b { font-size: 11px; font-weight: 800; }
+        .ad-rail-i.on { background: #FFFFFF; color: #3B6FE8; }
+        .ad-sub { flex: 1; padding: 0 16px; background: #F1F4FA; }
+        .ad-user { display: flex; align-items: center; justify-content: space-between; height: 48px; font-size: 13px; }
+        .ad-out { padding: 5px 14px; border-radius: 14px; background: #A7B4CC; color: #FFFFFF; font-size: 11px; }
+        .ad-sub-head { display: flex; justify-content: space-between; align-items: center; height: 40px; padding: 0 16px; margin: 4px 0 10px; border-radius: 6px; background: #FFFFFF; color: #3B6FE8; font-size: 13px; font-weight: 800; }
+        .ad-sub-i { padding: 8px 16px; font-size: 12.5px; font-weight: 700; color: #1E293B; }
+        .ad-sub-i.on { color: #3B6FE8; }
+        .ad-main { flex: 1; min-width: 0; padding: 32px 32px 32px 40px; }
+        .ad-crumb { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 800; margin-bottom: 22px; }
+        .ad-crumb i { font-size: 12px; color: #CBD5E1; }
+        .ad-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 16px; margin-bottom: 20px; }
+        .ad-tt { font-size: 15px; font-weight: 800; white-space: nowrap; }
+        .ad-tt .cnt { font-size: 12px; font-weight: 500; color: #94A3B8; }
+        .ad-dl { margin-left: 4px; padding: 2px 6px; border: 1px solid #64748B; border-radius: 4px; font-size: 10.5px; font-weight: 500; color: #64748B; }
+        .ad-filter { display: flex; gap: 8px; margin-left: auto; }
+        .ad-in { display: flex; align-items: center; justify-content: space-between; gap: 10px; height: 38px; padding: 0 10px; border: 1px solid #E2E8F0; border-radius: 6px; background: #FFFFFF; font-size: 12px; white-space: nowrap; }
+        .ad-in.date { width: 116px; }
+        .ad-in.sel { width: 124px; }
+        .ad-in.sel2 { width: 72px; }
+        .ad-in.ph { width: 180px; color: #94A3B8; }
+        .ad-in:not(.date):not(.sel):not(.sel2):not(.ph) { width: 180px; }
+        .ad-btn { display: inline-flex; align-items: center; justify-content: center; min-width: 60px; height: 38px; padding: 0 16px; border-radius: 6px; background: #2563EB; color: #FFFFFF; font-size: 12.5px; font-weight: 700; }
+        .ad-btn.sm { min-width: 0; height: 26px; padding: 0 12px; font-size: 11.5px; }
+        .ad-btn.line { background: #FFFFFF; color: #334155; border: 1px solid #CBD5E1; }
+        .ad-table { display: flex; flex-direction: column; gap: 8px; }
+        .ad-th, .ad-tr { display: grid; grid-template-columns: 1.3fr 1fr 1.1fr 0.9fr 1.3fr; gap: 8px; align-items: center; padding: 0 16px; text-align: center; }
+        .ad-th { height: 50px; background: #EEF2F9; font-weight: 800; }
+        .ad-tr { min-height: 50px; background: #FFFFFF; }
+        .ad-tr .ad-step { font-weight: 700; white-space: nowrap; }
+        .ad-tr .end small { display: block; font-size: 10px; color: #94A3B8; }
+        .ad-st { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 800; }
+        .ad-st.on { background: #FEE2E2; color: #B91C1C; }
+        .ad-st.auto { background: #E2E8F0; color: #475569; }
+        .ad-st.man { background: #DBEAFE; color: #1D4ED8; }
+        .ad-who { font-size: 11.5px; color: #475569; }
+        .ad-dash { color: #94A3B8; }
+        .ad-empty { padding: 22px 0; text-align: center; background: #FFFFFF; }
+        .ad-pager { display: flex; justify-content: center; align-items: center; gap: 18px; margin-top: 24px; color: #94A3B8; }
+        .ad-pager b { display: inline-flex; width: 24px; height: 24px; align-items: center; justify-content: center; border-radius: 4px; background: #2563EB; color: #FFFFFF; }
+        .ad-dim { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.45); }
+        .ad-modal { width: 400px; padding: 24px 24px 20px; border-radius: 10px; background: #FFFFFF; }
+        .ad-modal b { display: block; font-size: 15px; font-weight: 800; margin-bottom: 12px; }
+        .ad-modal p { font-size: 12.5px; line-height: 1.7; color: #334155; margin: 0 0 16px; }
+        .ad-modal-info { display: grid; grid-template-columns: 80px 1fr; gap: 6px 10px; padding: 12px 14px; border-radius: 6px; background: #F1F5F9; font-size: 12px; margin-bottom: 18px; }
+        .ad-modal-info span { color: #64748B; }
+        .ad-modal-info em { font-style: normal; font-weight: 700; }
+        .ad-modal-btns { display: flex; justify-content: flex-end; gap: 8px; }
+
+        /* ── 필터 묶음 · 펼친 셀렉트 ── */
+        .ad-grp { position: relative; display: flex; gap: 8px; }
+        .ad-in.sel, .ad-in.sel2 { position: relative; }
+        .ad-dd { position: absolute; top: 100%; left: 0; right: 0; z-index: 5; display: flex; flex-direction: column; border: 1px solid #64748B; background: #FFFFFF; box-shadow: 0 4px 10px rgba(15, 23, 42, 0.12); }
+        .ad-dd span { padding: 6px 10px; font-size: 12px; color: #0F172A; white-space: nowrap; }
+        .ad-dd span.on { background: #1D5FD8; color: #FFFFFF; }
+        .ad-in.sel { width: 132px; }

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADM-01 노점 검색 제한 로그 | RO 노점 검색 보안 강화 기획서</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="spec.css">
+    <script>
+        window.DOC_META_OVERRIDE = {
+            title: 'RO 노점 검색',
+            subtitle: '로그인 · 보안 확인 필수화',
+            version: 'v0.1.0'
+        };
+        window.DOC_TREE_OVERRIDE = [
+            {
+                group: 'DOCUMENT INFO',
+                items: [
+                    { id: 'DOC-00', label: '차단 정책', href: 'index.html' }
+                ]
+            },
+            {
+                group: 'SCREEN STORYBOARD',
+                items: [
+                    { id: 'SCR-01', label: '노점 검색 (거래 · 시세 조회)', href: '01_stall_search.html' }
+                ]
+            },
+            {
+                group: 'ADMIN',
+                items: [
+                    { id: 'ADM-01', label: '노점 검색 제한 로그', href: '02_admin.html' }
+                ]
+            }
+        ];
+    </script>
+    <!-- ad-* : 어드민 화면 부품 — build_admin.py 가 admin.css 를 넣는다 -->
+    <style>
+        /* 상단바 숨김 */
+        .viewport-bar > .vp-res-group, .vp-scale, .vp-panel-btn, .vp-edit-btn, .topbar-page-nav { display: none !important; }
+
+        /* ── Gravity Admin Tools 틀 ── */
+        .ad { position: relative; display: flex; min-height: 760px; background: #F8FAFE; font-size: 12px; color: #0F172A; }
+        .ad-side { width: 270px; flex-shrink: 0; background: #F1F4FA; display: flex; flex-direction: column; }
+        .ad-logo { display: flex; align-items: center; gap: 12px; height: 84px; padding: 0 16px; background: #F1F4FA; }
+        .ad-logo b { font-size: 14px; font-weight: 900; letter-spacing: 2px; color: #1E293B; }
+        .ad-logo em { font-style: normal; font-size: 15px; font-weight: 800; color: #3B6FE8; padding-right: 12px; border-right: 1px solid #CBD5E1; }
+        .ad-lang { font-size: 11.5px; font-weight: 700; color: #334155; white-space: nowrap; }
+        .ad-logo b, .ad-logo em { white-space: nowrap; }
+        .ad-lang i { font-size: 11px; color: #94A3B8; }
+        .ad-side-body { flex: 1; display: flex; }
+        .ad-rail { width: 80px; padding-top: 24px; background: #4F7FF0; border-radius: 0 28px 0 0; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+        .ad-rail-i { width: 52px; height: 52px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #FFFFFF; }
+        .ad-rail-i i { font-size: 15px; }
+        .ad-rail-i b { font-size: 11px; font-weight: 800; }
+        .ad-rail-i.on { background: #FFFFFF; color: #3B6FE8; }
+        .ad-sub { flex: 1; padding: 0 16px; background: #F1F4FA; }
+        .ad-user { display: flex; align-items: center; justify-content: space-between; height: 48px; font-size: 13px; }
+        .ad-out { padding: 5px 14px; border-radius: 14px; background: #A7B4CC; color: #FFFFFF; font-size: 11px; }
+        .ad-sub-head { display: flex; justify-content: space-between; align-items: center; height: 40px; padding: 0 16px; margin: 4px 0 10px; border-radius: 6px; background: #FFFFFF; color: #3B6FE8; font-size: 13px; font-weight: 800; }
+        .ad-sub-i { padding: 8px 16px; font-size: 12.5px; font-weight: 700; color: #1E293B; }
+        .ad-sub-i.on { color: #3B6FE8; }
+        .ad-main { flex: 1; min-width: 0; padding: 32px 32px 32px 40px; }
+        .ad-crumb { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 800; margin-bottom: 22px; }
+        .ad-crumb i { font-size: 12px; color: #CBD5E1; }
+        .ad-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 16px; margin-bottom: 20px; }
+        .ad-tt { font-size: 15px; font-weight: 800; white-space: nowrap; }
+        .ad-tt .cnt { font-size: 12px; font-weight: 500; color: #94A3B8; }
+        .ad-dl { margin-left: 4px; padding: 2px 6px; border: 1px solid #64748B; border-radius: 4px; font-size: 10.5px; font-weight: 500; color: #64748B; }
+        .ad-filter { display: flex; gap: 8px; margin-left: auto; }
+        .ad-in { display: flex; align-items: center; justify-content: space-between; gap: 10px; height: 38px; padding: 0 10px; border: 1px solid #E2E8F0; border-radius: 6px; background: #FFFFFF; font-size: 12px; white-space: nowrap; }
+        .ad-in.date { width: 116px; }
+        .ad-in.sel { width: 124px; }
+        .ad-in.sel2 { width: 72px; }
+        .ad-in.ph { width: 180px; color: #94A3B8; }
+        .ad-in:not(.date):not(.sel):not(.sel2):not(.ph) { width: 180px; }
+        .ad-btn { display: inline-flex; align-items: center; justify-content: center; min-width: 60px; height: 38px; padding: 0 16px; border-radius: 6px; background: #2563EB; color: #FFFFFF; font-size: 12.5px; font-weight: 700; }
+        .ad-btn.sm { min-width: 0; height: 26px; padding: 0 12px; font-size: 11.5px; }
+        .ad-btn.line { background: #FFFFFF; color: #334155; border: 1px solid #CBD5E1; }
+        .ad-table { display: flex; flex-direction: column; gap: 8px; }
+        .ad-th, .ad-tr { display: grid; grid-template-columns: 1.3fr 1fr 1.1fr 0.9fr 1.3fr; gap: 8px; align-items: center; padding: 0 16px; text-align: center; }
+        .ad-th { height: 50px; background: #EEF2F9; font-weight: 800; }
+        .ad-tr { min-height: 50px; background: #FFFFFF; }
+        .ad-tr .ad-step { font-weight: 700; white-space: nowrap; }
+        .ad-tr .end small { display: block; font-size: 10px; color: #94A3B8; }
+        .ad-st { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 800; }
+        .ad-st.on { background: #FEE2E2; color: #B91C1C; }
+        .ad-st.auto { background: #E2E8F0; color: #475569; }
+        .ad-st.man { background: #DBEAFE; color: #1D4ED8; }
+        .ad-who { font-size: 11.5px; color: #475569; }
+        .ad-dash { color: #94A3B8; }
+        .ad-empty { padding: 22px 0; text-align: center; background: #FFFFFF; }
+        .ad-pager { display: flex; justify-content: center; align-items: center; gap: 18px; margin-top: 24px; color: #94A3B8; }
+        .ad-pager b { display: inline-flex; width: 24px; height: 24px; align-items: center; justify-content: center; border-radius: 4px; background: #2563EB; color: #FFFFFF; }
+        .ad-dim { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.45); }
+        .ad-modal { width: 400px; padding: 24px 24px 20px; border-radius: 10px; background: #FFFFFF; }
+        .ad-modal b { display: block; font-size: 15px; font-weight: 800; margin-bottom: 12px; }
+        .ad-modal p { font-size: 12.5px; line-height: 1.7; color: #334155; margin: 0 0 16px; }
+        .ad-modal-info { display: grid; grid-template-columns: 80px 1fr; gap: 6px 10px; padding: 12px 14px; border-radius: 6px; background: #F1F5F9; font-size: 12px; margin-bottom: 18px; }
+        .ad-modal-info span { color: #64748B; }
+        .ad-modal-info em { font-style: normal; font-weight: 700; }
+        .ad-modal-btns { display: flex; justify-content: flex-end; gap: 8px; }
+
+        /* ── 필터 묶음 · 펼친 셀렉트 ── */
+        .ad-grp { position: relative; display: flex; gap: 8px; }
+        .ad-in.sel, .ad-in.sel2 { position: relative; }
+        .ad-dd { position: absolute; top: 100%; left: 0; right: 0; z-index: 5; display: flex; flex-direction: column; border: 1px solid #64748B; background: #FFFFFF; box-shadow: 0 4px 10px rgba(15, 23, 42, 0.12); }
+        .ad-dd span { padding: 6px 10px; font-size: 12px; color: #0F172A; white-space: nowrap; }
+        .ad-dd span.on { background: #1D5FD8; color: #FFFFFF; }
+        .ad-in.sel { width: 132px; }
+
+    </style>
+</head>
+<body>
+    <aside class="app-sidebar" id="app-sidebar" data-doc-id="ADM-01"></aside>
+    <main class="app-main">
+        <header class="app-topbar">
+            <div class="topbar-left-zone">
+                <button class="sidebar-toggle-trigger" id="sidebar-toggle-btn" title="메뉴 열기" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+                <span class="page-badge">ADM-01</span>
+                <span class="page-heading">노점 검색 제한 로그 (MEM &gt; 계정 관리)</span>
+            </div>
+            <div class="topbar-page-nav"></div>
+        </header>
+        <div class="app-content-body">
+            <div id="pc-spec-view" class="screen-spec-grid">
+                <div class="canvas-col">
+<div class="canvas-section" id="adm01" data-screen data-screen-code="ADM-01" data-screen-label="① 제한 로그 목록"><div class="canvas-card"><div class="wf-hub-canvas"><div class="ad"><aside class="ad-side"><div class="ad-logo"><b>GRAVITY</b><em>Admin Tools</em><span class="ad-lang"><i class="fa-solid fa-globe"></i> KO <i class="fa-solid fa-chevron-down"></i></span></div><div class="ad-side-body"><div class="ad-rail"><div class="ad-rail-i on"><i class="fa-solid fa-user"></i><b>MEM</b></div><div class="ad-rail-i"><i class="fa-solid fa-gamepad"></i><b>GAME</b></div><div class="ad-rail-i"><i class="fa-solid fa-sack-dollar"></i><b>PAY</b></div><div class="ad-rail-i"><i class="fa-solid fa-globe"></i><b>WEB</b></div><div class="ad-rail-i"><i class="fa-solid fa-chart-pie"></i><b>CRM</b></div><div class="ad-rail-i"><i class="fa-solid fa-gear"></i><b>SET</b></div></div><div class="ad-sub"><div class="ad-user"><b>이주형</b><span class="ad-out">로그아웃</span></div><div class="ad-sub-head">계정 관리 <i class="fa-solid fa-chevron-up"></i></div><div class="ad-sub-i">계정 조회</div><div class="ad-sub-i">게임블록 정보</div><div class="ad-sub-i">계정블록 정보</div><div class="ad-sub-i">Fraud 가입 제한 로그</div><div class="ad-sub-i on">노점 검색 제한 로그</div><div class="ad-sub-i">도메인 블록</div><div class="ad-sub-i">로그 정보</div></div></div></aside><main class="ad-main"><div class="ad-crumb">계정 관리 <i class="fa-solid fa-circle-chevron-right"></i> 노점 검색 제한 로그</div><div class="ad-bar"><div class="ad-tt">노점 검색 제한 로그 <span class="cnt">(전체 : 9)</span> <span class="ad-dl" style="position: relative;"><span class="pin pin-abs" data-pin="a4" style="top: -14px; right: -14px; left: auto;">4</span><i class="fa-solid fa-arrow-down"></i> Download</span></div><div class="ad-filter"><span class="ad-grp" data-pin-area><span class="pin pin-abs" data-pin="a1" style="top: -12px; left: -12px;">1</span><span class="ad-in date">2026-10-01 <i class="fa-regular fa-calendar"></i></span><span class="ad-in date">2026-10-27 <i class="fa-regular fa-calendar"></i></span></span><span class="ad-grp" data-pin-area><span class="pin pin-abs" data-pin="a2" style="top: -12px; left: -12px;">2</span><span class="ad-in sel">전체 <i class="fa-solid fa-chevron-down"></i><div class="ad-dd"><span class="on">전체</span><span class="">2차 · 1분 대기</span><span class="">3차 · 1일 차단</span><span class="">보안 확인 실패</span></div></span></span><span class="ad-grp" data-pin-area><span class="pin pin-abs" data-pin="a3" style="top: -12px; left: -12px;">3</span><span class="ad-in sel2">선택 <i class="fa-solid fa-chevron-down"></i><div class="ad-dd"><span class="">선택</span><span class="on">IP</span><span class="">AID</span></div></span><span class="ad-in ph">검색어</span><span class="ad-btn">검색</span></span></div></div><div class="ad-table" data-pin-area style="position: relative;"><span class="pin pin-abs" data-pin="a5" style="top: -12px; left: -12px;">5</span><div class="ad-th"><span>차단시간</span><span>처리 구분</span><span>IP</span><span>AID</span><span>해제시간</span></div><div class="ad-tr"><span>2026-10-27 14:22:05</span><span>3차 · 1일 차단</span><span>177.38.214.12</span><span>2041877</span><span>2026-10-28 14:22:05</span></div><div class="ad-tr"><span>2026-10-27 14:05:47</span><span>보안 확인 실패</span><span>189.4.77.201</span><span>1988302</span><span>2026-10-27 15:05:47</span></div><div class="ad-tr"><span>2026-10-27 13:41:19</span><span>3차 · 1일 차단</span><span>45.89.120.33</span><span>2050114</span><span>2026-10-28 13:41:19</span></div><div class="ad-tr"><span>2026-10-27 13:30:02</span><span>2차 · 1분 대기</span><span>200.155.9.88</span><span>1730021</span><span>2026-10-27 13:31:02</span></div><div class="ad-tr"><span>2026-10-27 11:12:40</span><span>3차 · 1일 차단</span><span>177.38.214.12</span><span>1655480</span><span>2026-10-28 11:12:40</span></div><div class="ad-tr"><span>2026-10-27 09:58:11</span><span>보안 확인 실패</span><span>187.62.3.140</span><span>2011736</span><span>2026-10-27 10:58:11</span></div><div class="ad-tr"><span>2026-10-27 09:20:33</span><span>2차 · 1분 대기</span><span>201.17.44.9</span><span>1890245</span><span>2026-10-27 09:21:33</span></div><div class="ad-tr"><span>2026-10-26 22:47:10</span><span>2차 · 1분 대기</span><span>45.89.120.33</span><span>2050114</span><span>2026-10-26 22:48:10</span></div><div class="ad-tr"><span>2026-10-26 08:15:27</span><span>3차 · 1일 차단</span><span>179.108.12.75</span><span>1902663</span><span>2026-10-27 08:15:27</span></div></div><div class="ad-pager"><i class="fa-solid fa-angles-left"></i><i class="fa-solid fa-angle-left"></i><b>1</b><i class="fa-solid fa-angle-right"></i><i class="fa-solid fa-angles-right"></i></div></main></div></div></div></div>
+<div class="canvas-section" id="adm02" data-screen data-screen-code="ADM-01" data-screen-label="② 검색 결과 없음"><div class="canvas-card"><div class="wf-hub-canvas"><div class="ad"><aside class="ad-side"><div class="ad-logo"><b>GRAVITY</b><em>Admin Tools</em><span class="ad-lang"><i class="fa-solid fa-globe"></i> KO <i class="fa-solid fa-chevron-down"></i></span></div><div class="ad-side-body"><div class="ad-rail"><div class="ad-rail-i on"><i class="fa-solid fa-user"></i><b>MEM</b></div><div class="ad-rail-i"><i class="fa-solid fa-gamepad"></i><b>GAME</b></div><div class="ad-rail-i"><i class="fa-solid fa-sack-dollar"></i><b>PAY</b></div><div class="ad-rail-i"><i class="fa-solid fa-globe"></i><b>WEB</b></div><div class="ad-rail-i"><i class="fa-solid fa-chart-pie"></i><b>CRM</b></div><div class="ad-rail-i"><i class="fa-solid fa-gear"></i><b>SET</b></div></div><div class="ad-sub"><div class="ad-user"><b>이주형</b><span class="ad-out">로그아웃</span></div><div class="ad-sub-head">계정 관리 <i class="fa-solid fa-chevron-up"></i></div><div class="ad-sub-i">계정 조회</div><div class="ad-sub-i">게임블록 정보</div><div class="ad-sub-i">계정블록 정보</div><div class="ad-sub-i">Fraud 가입 제한 로그</div><div class="ad-sub-i on">노점 검색 제한 로그</div><div class="ad-sub-i">도메인 블록</div><div class="ad-sub-i">로그 정보</div></div></div></aside><main class="ad-main"><div class="ad-crumb">계정 관리 <i class="fa-solid fa-circle-chevron-right"></i> 노점 검색 제한 로그</div><div class="ad-bar"><div class="ad-tt">노점 검색 제한 로그 <span class="cnt">(전체 : 0)</span> <span class="ad-dl" style="position: relative;"><i class="fa-solid fa-arrow-down"></i> Download</span></div><div class="ad-filter"><span class="ad-grp" data-pin-area><span class="ad-in date">2026-10-01 <i class="fa-regular fa-calendar"></i></span><span class="ad-in date">2026-10-27 <i class="fa-regular fa-calendar"></i></span></span><span class="ad-grp" data-pin-area><span class="ad-in sel">전체 <i class="fa-solid fa-chevron-down"></i></span></span><span class="ad-grp" data-pin-area><span class="ad-in sel2">선택 <i class="fa-solid fa-chevron-down"></i></span><span class="ad-in">9999999</span><span class="ad-btn">검색</span></span></div></div><div class="ad-table" data-pin-area style="position: relative;"><div class="ad-th"><span>차단시간</span><span>처리 구분</span><span>IP</span><span>AID</span><span>해제시간</span></div><div class="ad-empty" style="position: relative;"><span class="pin pin-abs" data-pin="a6" style="top: 12px; left: 16px;">6</span>데이터가 존재하지 않습니다</div></div></main></div></div></div></div>
+                </div>
+                <div class="spec-scroll-panel">
+<div class="spec-group" data-screen-for="adm01"><div class="spec-card" id="spec-a1"><div class="spec-card-head"><span class="pin" data-pin="a1">1</span><span class="spec-card-title" data-edit="title:spec-a1">기간</span><span class="spec-card-tag">Date</span></div><ul class="spec-list" data-edit="list:spec-a1"><li>차단시간 기준 시작일 ~ 종료일 · 기본: 이번 달 1일 ~ 오늘</li><li>날짜 칸 클릭 → 달력</li></ul></div>
+<div class="spec-card" id="spec-a2"><div class="spec-card-head"><span class="pin" data-pin="a2">2</span><span class="spec-card-title" data-edit="title:spec-a2">처리 구분</span><span class="spec-card-tag">Select</span></div><ul class="spec-list" data-edit="list:spec-a2"><li>전체 · 2차 · 1분 대기 · 3차 · 1일 차단 · 보안 확인 실패</li><li>기본 전체 → 고른 구분만 조회</li></ul></div>
+<div class="spec-card" id="spec-a3"><div class="spec-card-head"><span class="pin" data-pin="a3">3</span><span class="spec-card-title" data-edit="title:spec-a3">검색 기준 · 검색어</span><span class="spec-card-tag">Search</span></div><ul class="spec-list" data-edit="list:spec-a3"><li>선택 · IP · AID 중 고르고 검색어 입력 → 검색 (Enter 동일)</li><li>선택 상태에서 검색어 입력 → 기준 선택 안내 · 검색어 없으면 기간 · 처리 구분만으로 조회</li></ul></div>
+<div class="spec-card" id="spec-a4"><div class="spec-card-head"><span class="pin" data-pin="a4">4</span><span class="spec-card-title" data-edit="title:spec-a4">Download</span><span class="spec-card-tag">Action</span></div><ul class="spec-list" data-edit="list:spec-a4"><li>현재 검색 조건의 전체 결과 엑셀 다운로드 (페이지 무관)</li></ul></div>
+<div class="spec-card" id="spec-a5"><div class="spec-card-head"><span class="pin" data-pin="a5">5</span><span class="spec-card-title" data-edit="title:spec-a5">제한 로그 목록</span><span class="spec-card-tag">List</span></div><ul class="spec-list" data-edit="list:spec-a5"><li>차단시간 최신순 · 페이지당 20개</li><li>처리 구분 = 2차 · 1분 대기 / 3차 · 1일 차단 / 보안 확인 실패 · 해제시간 = 자동 해제 시각</li><li>WAF(IP 대량 요청) 차단은 우리 서버에 안 남음 → Cloudflare 로그에서 확인</li></ul></div>
+</div>
+<div class="spec-group" data-screen-for="adm02"><div class="spec-card" id="spec-a6"><div class="spec-card-head"><span class="pin" data-pin="a6">6</span><span class="spec-card-title" data-edit="title:spec-a6">검색 결과 없음</span><span class="spec-card-tag">Empty</span></div><ul class="spec-list" data-edit="list:spec-a6"><li>조건에 맞는 로그 없음 → '데이터가 존재하지 않습니다' · 전체 : 0</li></ul></div>
+</div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="spec.js"></script>
+</body>
+</html>

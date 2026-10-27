@@ -1,0 +1,12 @@
+{
+  // Cloudflare Workers — 기획서 정적 파일 + 접속 IP 제한 (worker.js)
+  "name": "ro-stall-search",
+  "main": "worker.js",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    "directory": "./",
+    "binding": "ASSETS",
+    // 모든 요청이 worker.js 를 먼저 거쳐야 IP 검사가 정적 파일에도 적용된다
+    "run_worker_first": true
+  }
+}
