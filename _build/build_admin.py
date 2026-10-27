@@ -1,4 +1,4 @@
-"""RO 노점 검색 보안 강화 — 03_admin.html (노점 검색 제한 로그) 빌더.
+"""RO 노점 검색 보안 강화 — 03_admin.html (계정블록 정보 · 노점 검색 차단 추가) 빌더.
 python -I -X utf8 build_admin.py <기획서 폴더>
 Gravity Admin Tools (MEM > 계정 관리) 화면 틀. 핀 ↔ 디스크립션 카드.
 """
@@ -9,19 +9,19 @@ D = pathlib.Path(sys.argv[1])
 
 RAIL = [("fa-user", "MEM", True), ("fa-gamepad", "GAME", False), ("fa-sack-dollar", "PAY", False),
         ("fa-globe", "WEB", False), ("fa-chart-pie", "CRM", False), ("fa-gear", "SET", False)]
-SUB = ["계정 조회", "게임블록 정보", "계정블록 정보", "Fraud 가입 제한 로그", "노점 검색 제한 로그", "도메인 블록", "로그 정보"]
+SUB = ["계정 조회", "게임블록 정보", "계정블록 정보", "Fraud 가입 제한 로그", "도메인 블록", "로그 정보"]
 
-# 차단시간 · 처리 구분 · AID · IP · 해제시간 (최신순) — 차단은 AID 기준, IP 는 차단 당시 접속 IP (참고)
+# 기존 계정블록 정보 표 그대로 — 노점 검색 차단 행이 같은 목록에 쌓인다 (처리 일시 최신순)
+# No · ID · AID · 블록 상태 · 처리 구분 · 처리 일시 · 블록 해제
 ROWS = [
-    ("2026-10-27 14:22:05", "3차 · 1일 차단", "177.38.214.12", "2041877", "2026-10-28 14:22:05"),
-    ("2026-10-27 14:05:47", "보안 확인 실패", "189.4.77.201", "1988302", "2026-10-27 15:05:47"),
-    ("2026-10-27 13:41:19", "3차 · 1일 차단", "45.89.120.33", "2050114", "2026-10-28 13:41:19"),
-    ("2026-10-27 13:30:02", "2차 · 1분 대기", "200.155.9.88", "1730021", "2026-10-27 13:31:02"),
-    ("2026-10-27 11:12:40", "3차 · 1일 차단", "191.53.6.240", "2041877", "2026-10-28 11:12:40"),
-    ("2026-10-27 09:58:11", "보안 확인 실패", "187.62.3.140", "2011736", "2026-10-27 10:58:11"),
-    ("2026-10-27 09:20:33", "2차 · 1분 대기", "201.17.44.9", "1890245", "2026-10-27 09:21:33"),
-    ("2026-10-26 22:47:10", "2차 · 1분 대기", "103.77.42.18", "2050114", "2026-10-26 22:48:10"),
-    ("2026-10-26 08:15:27", "3차 · 1일 차단", "179.108.12.75", "1902663", "2026-10-27 08:15:27"),
+    ("24", "carlos.m88@gmail.com", "2041877", "3차 · 5분 30회 초과", "노점 검색", "2026-10-27 14:22:05", "2026-10-28 14:22:05"),
+    ("23", "lu_vendas@hotmail.com", "1988302", "보안 확인 5회 실패", "노점 검색", "2026-10-27 14:05:47", "2026-10-27 15:05:47"),
+    ("22", "rag.trader01@gmail.com", "2050114", "3차 · 5분 30회 초과", "노점 검색", "2026-10-27 13:41:19", "2026-10-28 13:41:19"),
+    ("21", "pedro_ro@yahoo.com", "1730021", "2차 · 1분 10회 초과", "노점 검색", "2026-10-27 13:30:02", "2026-10-27 13:31:02"),
+    ("20", "anaclara.s@gmail.com", "2011736", "보안 확인 5회 실패", "노점 검색", "2026-10-27 09:58:11", "2026-10-27 10:58:11"),
+    ("19", "kafra_m@outlook.com", "1890245", "2차 · 1분 10회 초과", "노점 검색", "2026-10-27 09:20:33", "2026-10-27 09:21:33"),
+    ("18", "latamgmid_s002@gnjoylatam.com", "1000123", "충전 블록", "FRAUD BLOCK", "2026-08-13 18:52:43", "2026-08-13 19:02:43"),
+    ("17", "mytest13@gravity.co.kr", "1000279", "충전 블록", "FRAUD BLOCK", "2026-07-31 04:27:45", "2026-07-31 04:37:45"),
 ]
 
 
@@ -30,12 +30,8 @@ def rail():
 
 
 def sub():
-    items = "".join(f'<div class="ad-sub-i{" on" if n == "노점 검색 제한 로그" else ""}">{n}</div>' for n in SUB)
+    items = "".join(f'<div class="ad-sub-i{" on" if n == "계정블록 정보" else ""}">{n}</div>' for n in SUB)
     return f'<div class="ad-sub-head">계정 관리 <i class="fa-solid fa-chevron-up"></i></div>{items}'
-
-
-WARN = '<span class="tag tag--warn">확정 필요</span>'
-TYPES = ["전체", "2차 · 1분 대기", "3차 · 1일 차단", "보안 확인 실패"]
 
 
 def pin(pid, label, style="top: -12px; left: -12px;"):
@@ -48,11 +44,14 @@ def card(pid, label, title, tag, lis):
             f'<ul class="spec-list" data-edit="list:spec-{pid}">' + "".join(f"<li>{x}</li>" for x in lis) + "</ul></div>\n")
 
 
-HEAD = '<div class="ad-th"><span>차단시간</span><span>처리 구분</span><span>AID</span><span>접속 IP</span><span>해제시간</span></div>'
+HEAD = ('<div class="ad-th"><span>No.</span><span>ID</span><span>AID</span><span>블록 상태</span>'
+        '<span>처리 구분</span><span>처리 일시</span><span>블록 해제</span></div>')
 
 
 def table():
-    return HEAD + "".join(f'<div class="ad-tr">' + "".join(f"<span>{x}</span>" for x in (t, k, a, ip, end)) + "</div>" for t, k, ip, a, end in ROWS)
+    return HEAD + "".join(
+        f'<div class="ad-tr{" new" if k == "노점 검색" else ""}"><span>{no}</span><span>{i}</span><span>{a}</span><span>{st}</span>'
+        f'<span>{k}</span><span>{t}</span><span class="ad-end">{end}</span></div>' for no, i, a, st, k, t, end in ROWS)
 
 
 def frame(main, modal=""):
@@ -61,52 +60,28 @@ def frame(main, modal=""):
             f'<main class="ad-main">{main}</main>{modal}</div>')
 
 
-def dd(opts, on):
-    """펼친 셀렉트 목록 (브라우저 기본 셀렉트 모양)."""
-    return '<div class="ad-dd">' + "".join(f'<span class="{"on" if o == on else ""}">{o}</span>' for o in opts) + "</div>"
-
-
-def filt(pins=False, word="", open_=False):
-    p1, p2, p3 = ("a1", "a2", "a3") if pins else (None, None, None)
-    w = f'<span class="ad-in">{word}</span>' if word else '<span class="ad-in ph">검색어</span>'
-    t_dd = dd(TYPES, "전체") if open_ else ""
-    k_dd = dd(["선택", "AID", "IP"], "AID") if open_ else ""
-    return (f'<div class="ad-filter">'
-            f'<span class="ad-grp" data-pin-area>{pin(p1, "1")}<span class="ad-in date">2026-10-01 <i class="fa-regular fa-calendar"></i></span><span class="ad-in date">2026-10-27 <i class="fa-regular fa-calendar"></i></span></span>'
-            f'<span class="ad-grp" data-pin-area>{pin(p2, "2")}<span class="ad-in sel">전체 <i class="fa-solid fa-chevron-down"></i>{t_dd}</span></span>'
-            f'<span class="ad-grp" data-pin-area>{pin(p3, "3")}<span class="ad-in sel2">선택 <i class="fa-solid fa-chevron-down"></i>{k_dd}</span>{w}<span class="ad-btn">검색</span></span></div>')
-
-
-def head(n, f, p_dl=None):
-    return ('<div class="ad-crumb">계정 관리 <i class="fa-solid fa-circle-chevron-right"></i> 노점 검색 제한 로그</div>'
-            f'<div class="ad-bar"><div class="ad-tt">노점 검색 제한 로그 <span class="cnt">(전체 : {n})</span> '
-            f'<span class="ad-dl" style="position: relative;">{pin(p_dl, "4", "top: -14px; right: -14px; left: auto;")}<i class="fa-solid fa-arrow-down"></i> Download</span></div>{f}</div>')
+def head(n):
+    return ('<div class="ad-crumb">계정 관리 <i class="fa-solid fa-circle-chevron-right"></i> 계정블록 정보</div>'
+            f'<div class="ad-bar"><div class="ad-tt">계정블록 정보 <span class="cnt">(전체 : {n})</span> '
+            '<span class="ad-dl"><i class="fa-solid fa-arrow-down"></i> Download</span></div>'
+            '<div class="ad-filter"><span class="ad-in date">2026-01-28 <i class="fa-regular fa-calendar"></i></span>'
+            '<span class="ad-in date">2026-10-28 <i class="fa-regular fa-calendar"></i></span>'
+            '<span class="ad-in ph">AID</span><span class="ad-btn">검색</span></div></div>')
 
 
 def main_list():
-    return (head(len(ROWS), filt(True, open_=True), "a4")
-            + f'<div class="ad-table" data-pin-area style="position: relative;">{pin("a5", "5")}{table()}</div>'
-            '<div class="ad-pager"><i class="fa-solid fa-angles-left"></i><i class="fa-solid fa-angle-left"></i><b>1</b><i class="fa-solid fa-angle-right"></i><i class="fa-solid fa-angles-right"></i></div>')
+    return (head(len(ROWS))
+            + '<div class="ad-table ad-acct" data-pin-area style="position: relative;">'
+            + pin("a1", "1", "top: 38px; left: 49%;") + pin("a2", "2", "top: 38px; left: 63%;") + pin("a3", "3", "top: 38px; right: 4%; left: auto;")
+            + table() + '</div>')
 
 
-def main_empty():
-    return (head(0, filt(word="9999999"))
-            + f'<div class="ad-table" data-pin-area style="position: relative;">{HEAD}<div class="ad-empty" style="position: relative;">{pin("a6", "6", "top: 12px; left: 16px;")}데이터가 존재하지 않습니다</div></div>')
+C1 = (card("a1", "1", "블록 상태", "Status", ["노점 검색 차단 기준 그대로 표시",
+                                            "2차 · 1분 10회 초과 (1분) / 3차 · 5분 30회 초과 (1일) / 보안 확인 5회 실패 (1시간)"])
+      + card("a2", "2", "처리 구분", "Type", ["노점 검색 → 기존 FRAUD BLOCK 과 같은 목록에서 구분"])
+      + card("a3", "3", "블록 해제", "Release", ["제한 시간 끝나는 시각 · 지나면 자동 해제 (기존과 같음)"]))
 
-
-C1 = (card("a1", "1", "기간", "Date", ["차단시간 기준 시작일 ~ 종료일 · 기본: 이번 달 1일 ~ 오늘", "날짜 칸 클릭 → 달력"])
-      + card("a2", "2", "처리 구분", "Select", ["전체 · 2차 · 1분 대기 · 3차 · 1일 차단 · 보안 확인 실패", "기본 전체 → 고른 구분만 조회"])
-      + card("a3", "3", "검색 기준 · 검색어", "Search", ["선택 · AID · IP 중 고르고 검색어 입력 → 검색 (Enter 동일)",
-                                                     "선택 상태에서 검색어 입력 → 기준 선택 안내 · 검색어 없으면 기간 · 처리 구분만으로 조회"])
-      + card("a4", "4", "Download", "Action", ["현재 검색 조건의 전체 결과 엑셀 다운로드 (페이지 무관)"])
-      + card("a5", "5", "제한 로그 목록", "List", ["차단시간 최신순 · 페이지당 20개",
-                                                 "처리 구분 = 2차 · 1분 대기 / 3차 · 1일 차단 / 보안 확인 실패 · 해제시간 = 자동 해제 시각",
-                                                 "차단은 계정(AID) 기준 · 접속 IP 는 차단 당시 IP (참고용 · IP 를 바꿔도 같은 AID 면 차단 유지)",
-                                                 "제한 중인 계정 = RO 웹 전체 메뉴 차단 → 이용 제한 페이지 (SCR-02)"]))
-C2 = card("a6", "6", "검색 결과 없음", "Empty", ["조건에 맞는 로그 없음 → '데이터가 존재하지 않습니다' · 전체 : 0"])
-
-SECS = [("adm01", "ADM-01", "① 제한 로그 목록", frame(main_list()), C1),
-        ("adm02", "ADM-01", "② 검색 결과 없음", frame(main_empty()), C2)]
+SECS = [("adm01", "ADM-01", "① 계정블록 정보", frame(main_list()), C1)]
 
 CSS = (pathlib.Path(__file__).with_name("admin.css")).read_text(encoding="utf-8")
 TREE = pathlib.Path(__file__).with_name("tree.js").read_text(encoding="utf-8")
@@ -116,7 +91,7 @@ html = f"""<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADM-01 노점 검색 제한 로그 | RO 노점 검색 보안 강화 기획서</title>
+    <title>ADM-01 계정블록 정보 | RO 노점 검색 보안 강화 기획서</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="spec.css">
     <script>
@@ -134,7 +109,7 @@ html = f"""<!DOCTYPE html>
             <div class="topbar-left-zone">
                 <button class="sidebar-toggle-trigger" id="sidebar-toggle-btn" title="메뉴 열기" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
                 <span class="page-badge">ADM-01</span>
-                <span class="page-heading">노점 검색 제한 로그 (MEM &gt; 계정 관리)</span>
+                <span class="page-heading">계정블록 정보 (MEM &gt; 계정 관리)</span>
             </div>
             <div class="topbar-page-nav"></div>
         </header>

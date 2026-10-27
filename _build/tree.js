@@ -20,7 +20,7 @@
             {
                 group: 'ADMIN',
                 items: [
-                    { id: 'ADM-01', label: '노점 검색 제한 로그', href: '03_admin.html' }
+                    { id: 'ADM-01', label: '계정블록 정보', href: '03_admin.html' }
                 ]
             }
         ];

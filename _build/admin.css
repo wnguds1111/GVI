@@ -70,3 +70,12 @@
         .ad-dd span { padding: 6px 10px; font-size: 12px; color: #0F172A; white-space: nowrap; }
         .ad-dd span.on { background: #1D5FD8; color: #FFFFFF; }
         .ad-in.sel { width: 132px; }
+
+        /* v23 계정블록 정보 7열 */
+        .ad-acct .ad-th, .ad-acct .ad-tr { grid-template-columns: 0.4fr 2fr 0.8fr 1.4fr 1fr 1.4fr 1.4fr; }
+        .ad-acct .ad-tr { margin-top: 10px; min-height: 60px; }
+        .ad-acct .ad-th { height: 60px; }
+        .ad-acct .ad-th span:first-child, .ad-acct .ad-tr span:first-child { text-align: left; }
+        .ad-acct .ad-tr span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .ad-acct .ad-tr.new { background: #F5F8FF; }
+        .ad-end { text-decoration: underline dotted #94A3B8; text-underline-offset: 3px; }
