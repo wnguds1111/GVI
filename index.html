@@ -222,11 +222,11 @@
                     .pm-cap { font-style: normal; font-size: 11px; font-weight: 700; color: #64748B; margin-top: 2px; }
                     .pm-chk { display: inline-block; width: 14px; height: 14px; margin-right: 6px; border: 1.5px solid #94A3B8; border-radius: 3px; vertical-align: -2px; background: #FFFFFF; }
 
-                    /* v11 — 처리 칸 넓게 · 별도 페이지 · Cloudflare 확인 화면 */
+                    /* v11 — 처리 칸 넓게 */
                     .pol td.pol-act { width: 620px; min-width: 620px; }
                     .pol td:nth-child(2), .pol td:nth-child(3) { white-space: normal; }
                     .pol td:nth-child(4) { min-width: 150px !important; }
-                    .pm-msg, .pm-browser, .pm-ts, .pm-search { max-width: 520px; }
+                    .pm-msg, .pm-ts, .pm-search { max-width: 520px; }
                     .pol td:nth-child(4) { white-space: normal; min-width: 170px; }
                     .pm { padding: 12px; }
                     .pm-msg { padding: 18px 16px; }
@@ -234,20 +234,6 @@
                     .pm-msg span { font-size: 12px; }
                     .pm-ts { height: 44px; font-size: 13px; }
                     .pm-search span { height: 34px; font-size: 12.5px; }
-                    .pm-browser { border: 1px solid #CBD5E1; border-radius: 8px; overflow: hidden; background: #FFFFFF; }
-                    .pm-url { display: block; padding: 7px 10px; background: #E2E8F0; font-size: 10.5px; color: #475569; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-                    .pm-url i { font-size: 9px; margin-right: 4px; }
-                    .pm-browser .pm-page { border: 0; border-radius: 0; padding: 26px 16px; }
-                    .pm-browser .pm-page b { font-size: 34px; }
-                    .pm-chal { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 26px 16px; }
-                    .pm-cfw { display: flex; align-items: center; justify-content: space-between; width: 300px; max-width: 100%; height: 64px; padding: 0 14px; border: 1px solid #D4D4D8; border-radius: 4px; background: #FAFAFA; }
-                    .pm-cfw-l { display: flex; align-items: center; font-size: 14px; color: #1F2937; }
-                    .pm-cfw-l .pm-chk { width: 22px; height: 22px; border: 2px solid #4B5563; border-radius: 4px; margin-right: 10px; }
-                    .pm-cfw-r { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2; }
-                    .pm-cfw-r i { font-size: 18px; color: #F38020; }
-                    .pm-cfw-r b { font-size: 9px; font-weight: 900; letter-spacing: 0.5px; color: #1F2937; }
-                    .pm-cfw-r small { font-size: 8.5px; color: #6B7280; }
-                    .pm-chal-t { font-size: 12px; color: #6B7280; }
 
                     /* 안내 메시지 LQA 표 */
                     .pol-msg .pol-grp small { display: block; margin-top: 4px; font-size: 11.5px; font-weight: 500; color: #64748B; }
@@ -295,7 +281,7 @@
 
 
                 <div class="cv-sec">
-                    <h3 class="cv-h3"><span class="no">2</span>차단 정책 (Turnstile + 백엔드 + WAF)</h3>
+                    <h3 class="cv-h3"><span class="no">2</span>차단 정책 (Turnstile + 백엔드)</h3>
 
                     <div class="pol-wrap">
                         <table class="standard-table pol">
@@ -323,7 +309,7 @@
                                     <td>백엔드</td>
                                     <td>IP</td>
                                     <td><b>1분 내 조회 10회</b> 초과 → 11번째부터</td>
-                                    <td class="pol-act"><div class="pol-act-t">검색 일시 중지 · 남은 시간 표시 (E1 · 안내 ②)</div><div class="pm"><div class="pm-msg warn"><i class="fa-solid fa-hourglass-half"></i><b>Please wait a moment</b><span>You've searched too many times in a short period. Please wait 1 minute and try again.</span><em class="pm-wait">00:42</em></div></div></td>
+                                    <td class="pol-act"><div class="pol-act-t">검색 일시 중지 · 남은 시간 표시 (E1 · 안내 ①)</div><div class="pm"><div class="pm-msg warn"><i class="fa-solid fa-hourglass-half"></i><b>Please wait a moment</b><span>You've searched too many times in a short period. Please wait 1 minute and try again.</span><em class="pm-wait">00:42</em></div></div></td>
                                     <td>1분</td>
                                 </tr>
                                 <tr>
@@ -331,7 +317,7 @@
                                     <td>백엔드</td>
                                     <td>IP</td>
                                     <td><b>5분 내 조회 30회</b> 초과 → 31번째부터</td>
-                                    <td class="pol-act"><div class="pol-act-t">노점 검색 차단 (E2 · 안내 ③)</div><div class="pm"><div class="pm-msg warn"><i class="fa-solid fa-ban"></i><b>Search is temporarily unavailable</b><span>Due to a high number of searches, Stall Shop search is temporarily unavailable. Please try again later.</span></div></div></td>
+                                    <td class="pol-act"><div class="pol-act-t">노점 검색 차단 (E2 · 안내 ②)</div><div class="pm"><div class="pm-msg warn"><i class="fa-solid fa-ban"></i><b>Search is temporarily unavailable</b><span>Due to a high number of searches, Stall Shop search is temporarily unavailable. Please try again later.</span></div></div></td>
                                     <td>1일</td>
                                 </tr>
                                 <tr>
@@ -339,24 +325,8 @@
                                     <td>백엔드</td>
                                     <td>IP</td>
                                     <td><b>10분 내 토큰 검증 5회</b> 실패</td>
-                                    <td class="pol-act"><div class="pol-act-t">노점 검색 차단 (E4 · 안내 ④)</div><div class="pm"><div class="pm-msg warn"><i class="fa-solid fa-shield-halved"></i><b>Security check failed</b><span>Security check failed too many times. Please try again later.</span></div></div></td>
+                                    <td class="pol-act"><div class="pol-act-t">노점 검색 차단 (E4 · 안내 ③)</div><div class="pm"><div class="pm-msg warn"><i class="fa-solid fa-shield-halved"></i><b>Security check failed</b><span>Security check failed too many times. Please try again later.</span></div></div></td>
                                     <td>1시간</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>대량 요청</strong></td>
-                                    <td>WAF</td>
-                                    <td>IP</td>
-                                    <td>노점 경로 <b>5분 내 300회</b> 초과 (요청 수)</td>
-                                    <td class="pol-act"><div class="pol-act-t"><b>별도 429 페이지</b> 노출 (노점 화면 대신 · 안내 ①)</div><div class="pm"><div class="pm-browser"><span class="pm-url"><i class="fa-solid fa-lock"></i> ro.gnjoyamericas.com/en/intro/shop-search/trading</span><div class="pm-page"><b>429</b><strong>Too Many Requests</strong><span>Too many requests. Access is temporarily restricted. Please try again later.</span></div></div></div></td>
-                                    <td>1일</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>봇</strong></td>
-                                    <td>WAF</td>
-                                    <td>IP</td>
-                                    <td>봇 점수 낮음 · 데이터센터 IP</td>
-                                    <td class="pol-act"><div class="pol-act-t"><b>Cloudflare 확인 화면</b> → 통과 전까지 노점 페이지 진입 불가 · 데이터 요청은 차단</div><div class="pm"><div class="pm-browser"><span class="pm-url"><i class="fa-solid fa-lock"></i> ro.gnjoyamericas.com/en/intro/shop-search/trading</span><div class="pm-chal"><div class="pm-cfw"><span class="pm-cfw-l"><span class="pm-chk"></span> Verify you are human</span><span class="pm-cfw-r"><i class="fa-solid fa-cloud"></i><b>CLOUDFLARE</b><small><u>Privacy</u> • <u>Help</u></small></span></div><span class="pm-chal-t">Checking security for access.</span></div></div></div></td>
-                                    <td>통과 전까지</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -369,15 +339,7 @@
                         <table class="standard-table pol pol-msg">
                             <thead><tr><th style="width: 130px;">구분</th><th style="width: 150px;">항목 · 문구 ID</th><th>언어</th><th>문구</th></tr></thead>
                             <tbody>
-<tr class="pol-top"><td rowspan="8" class="pol-grp"><strong>① 429 페이지</strong><small>대량 요청 (WAF)</small></td><td rowspan="4" class="pol-id"><b>제목</b><code>STALL_429_TITLE</code></td><td class="pol-lang">KO</td><td>요청이 너무 많습니다</td></tr>
-<tr class=""><td class="pol-lang">EN</td><td>Too Many Requests</td></tr>
-<tr class=""><td class="pol-lang">PT</td><td>Muitas solicitações</td></tr>
-<tr class=""><td class="pol-lang">ES</td><td>Demasiadas solicitudes</td></tr>
-<tr class="pol-sub"><td rowspan="4" class="pol-id"><b>본문</b><code>STALL_429_DESC</code></td><td class="pol-lang">KO</td><td>요청이 많아 일시적으로 접속이 제한되었습니다. 잠시 후 다시 시도해 주세요.</td></tr>
-<tr class=""><td class="pol-lang">EN</td><td>Too many requests. Access is temporarily restricted. Please try again later.</td></tr>
-<tr class=""><td class="pol-lang">PT</td><td>Muitas solicitações. O acesso está temporariamente restrito. Por favor, tente novamente mais tarde.</td></tr>
-<tr class=""><td class="pol-lang">ES</td><td>Demasiadas solicitudes. El acceso está temporalmente restringido. Por favor, inténtelo nuevamente más tarde.</td></tr>
-<tr class="pol-top"><td rowspan="8" class="pol-grp"><strong>② 2차 1분 대기 (E1)</strong><small>빈도 초과</small></td><td rowspan="4" class="pol-id"><b>제목</b><code>STALL_WAIT_TITLE</code></td><td class="pol-lang">KO</td><td>잠시만 기다려 주세요</td></tr>
+<tr class="pol-top"><td rowspan="8" class="pol-grp"><strong>① 2차 1분 대기 (E1)</strong><small>빈도 초과</small></td><td rowspan="4" class="pol-id"><b>제목</b><code>STALL_WAIT_TITLE</code></td><td class="pol-lang">KO</td><td>잠시만 기다려 주세요</td></tr>
 <tr class=""><td class="pol-lang">EN</td><td>Please wait a moment</td></tr>
 <tr class=""><td class="pol-lang">PT</td><td>Aguarde um momento</td></tr>
 <tr class=""><td class="pol-lang">ES</td><td>Espera un momento</td></tr>
@@ -385,7 +347,7 @@
 <tr class=""><td class="pol-lang">EN</td><td>You've searched too many times in a short period. Please wait 1 minute and try again.</td></tr>
 <tr class=""><td class="pol-lang">PT</td><td>Você fez muitas buscas em pouco tempo. Aguarde 1 minuto e tente novamente.</td></tr>
 <tr class=""><td class="pol-lang">ES</td><td>Has realizado demasiadas búsquedas en poco tiempo. Espera 1 minuto e inténtalo de nuevo.</td></tr>
-<tr class="pol-top"><td rowspan="8" class="pol-grp"><strong>③ 3차 1일 차단 (E2)</strong><small>과다 조회</small></td><td rowspan="4" class="pol-id"><b>제목</b><code>STALL_BLOCK_TITLE</code></td><td class="pol-lang">KO</td><td>일시적으로 검색할 수 없습니다</td></tr>
+<tr class="pol-top"><td rowspan="8" class="pol-grp"><strong>② 3차 1일 차단 (E2)</strong><small>과다 조회</small></td><td rowspan="4" class="pol-id"><b>제목</b><code>STALL_BLOCK_TITLE</code></td><td class="pol-lang">KO</td><td>일시적으로 검색할 수 없습니다</td></tr>
 <tr class=""><td class="pol-lang">EN</td><td>Search is temporarily unavailable</td></tr>
 <tr class=""><td class="pol-lang">PT</td><td>Busca temporariamente indisponível</td></tr>
 <tr class=""><td class="pol-lang">ES</td><td>Búsqueda temporalmente no disponible</td></tr>
@@ -393,7 +355,7 @@
 <tr class=""><td class="pol-lang">EN</td><td>Due to a high number of searches, Stall Shop search is temporarily unavailable. Please try again later.</td></tr>
 <tr class=""><td class="pol-lang">PT</td><td>Devido a um número elevado de buscas, a busca de lojas está temporariamente indisponível. Por favor, tente novamente mais tarde.</td></tr>
 <tr class=""><td class="pol-lang">ES</td><td>Debido a un alto número de búsquedas, la búsqueda de tiendas está temporalmente indisponible. Por favor, inténtelo nuevamente más tarde.</td></tr>
-<tr class="pol-top"><td rowspan="8" class="pol-grp"><strong>④ 보안 확인 실패 (E4)</strong><small>10분 내 5회 실패</small></td><td rowspan="4" class="pol-id"><b>제목</b><code>STALL_VERIFY_TITLE</code></td><td class="pol-lang">KO</td><td>보안 확인 실패</td></tr>
+<tr class="pol-top"><td rowspan="8" class="pol-grp"><strong>③ 보안 확인 실패 (E4)</strong><small>10분 내 5회 실패</small></td><td rowspan="4" class="pol-id"><b>제목</b><code>STALL_VERIFY_TITLE</code></td><td class="pol-lang">KO</td><td>보안 확인 실패</td></tr>
 <tr class=""><td class="pol-lang">EN</td><td>Security check failed</td></tr>
 <tr class=""><td class="pol-lang">PT</td><td>Falha na verificação de segurança</td></tr>
 <tr class=""><td class="pol-lang">ES</td><td>Error en la verificación de seguridad</td></tr>
