@@ -112,17 +112,17 @@ def mp_card(n, mn, mx, av, vol):
             f'<div class="ss-card-vol"><span>Vol</span><em>{vol}</em></div></div>')
 
 
-def result_bar(word="as", compact=False):
+def result_bar(word="as", compact=False, p=None):
     head = f'<span class="ss-rb-n">{"" if compact else f"&#39;{word}&#39; Search Results "}<b>260</b></span>'
     return (f'<div class="ss-rb">{head}<span class="ss-rb-r"><span><i class="fa-solid fa-arrow-down-up-across-line"></i> By Relevance <i class="fa-solid fa-chevron-down"></i></span>'
-            '<span>20 <i class="fa-solid fa-chevron-down"></i></span><span class="ss-vt"><i class="fa-solid fa-list"></i><i class="fa-solid fa-table-cells-large on"></i></span></span></div>')
+            f'<span style="position: relative;">{pin(p, p[1:], "top: -14px; left: -26px;") if p else ""}20 <i class="fa-solid fa-chevron-down"></i></span><span class="ss-vt"><i class="fa-solid fa-list"></i><i class="fa-solid fa-table-cells-large on"></i></span></span></div>')
 
 
-def results(p=None, p2=None):
+def results(p=None, p2=None, p3=None):
     pp = pin(p, p[1:], "top: -4px; left: -28px;") if p else ""
-    pq = pin(p2, p2[1:], "top: -6px; left: -26px;") if p2 else ""
+    pq = pin(p3, p3[1:], "top: -6px; left: -26px;") if p3 else ""
     cards = "".join(mp_card(*c) for c in CARDS)
-    return (f'<div class="ss-result" data-pin-area>{pp}{result_bar()}<div class="ss-grid">{cards}</div>'
+    return (f'<div class="ss-result" data-pin-area>{pp}{result_bar(p=p2)}<div class="ss-grid">{cards}</div>'
             f'<div class="ss-pager" style="position: relative;">{pq}<i class="fa-solid fa-angle-left"></i><b>1</b><span>2</span><span>3</span><span>4</span><span>5</span><i class="fa-solid fa-angle-right"></i></div></div>')
 
 
@@ -158,6 +158,10 @@ CASES = "".join([
     case("e4", "E4", "Turnstile 확인 중", "진입 직후 · 조회 직후 위젯이 다시 도는 동안 · 탭 줄 오른쪽 위젯 + 검색 버튼",
          "Success! 가 뜨기 전에는 검색 버튼이 비활성이라 검색할 수 없습니다.",
          ts_widget(state="run") + '<div class="ss-search mini" style="margin-top: 12px;"><span class="ss-in">White Potion</span><span class="ss-go off"><i class="fa-solid fa-magnifying-glass"></i></span></div>'),
+    case("e5", "E5", "비정상 검색 경로", "표시 개수 20 · 40 · 60 이외 값으로 조회 (주소 limit 조작 등) · 화면 가운데 얼럿",
+         "조회하지 않고 얼럿만 띄웁니다.",
+         '<div class="ss-alert sm" style="margin: 0 auto; box-shadow: none; border: 1px solid #CBD5E1;"><span>This is not a valid search path.</span>'
+         '<div class="ss-alert-btn"><span class="ss-btn">OK</span></div></div>'),
 ])
 
 
@@ -170,7 +174,7 @@ def case_zone():
 # ───────────────────────── 화면 3개 ─────────────────────────
 S1 = with_alert(screen_pc(False, guide_box(), word="White Potion", pins={"gnb": "p1", "tab": "p2", "search": "p3"}, ts=ts_widget()), login_alert("p4", "p5"))
 S2 = screen_pc(True, guide_box(), pins={"gnb": "p6"}, ts=ts_widget("p7"))
-S3 = screen_pc(True, results("p8", "p9"), word="as", ts=ts_widget(), tab="market") + case_zone()
+S3 = screen_pc(True, results("p8", "p9", "p10"), word="as", ts=ts_widget(), tab="market") + case_zone()
 
 C1 = (card("p1", "1", "로그인 · 회원가입 (헤더)", "Header", ["Login → 로그인 페이지 → 로그인 후 보던 화면(검색 조건 그대로)으로 복귀",
                                                         "Sign Up → 회원가입 새 창"])
@@ -181,7 +185,10 @@ C1 = (card("p1", "1", "로그인 · 회원가입 (헤더)", "Header", ["Login �
                                                    "검색 버튼 · Enter → 4 얼럿 (미들서버 조회 안 함)",
                                                    "검색 조건이 붙은 주소로 들어와도 조회 안 함 · 결과 자리는 Guide 그대로"])
       + card("p4", "4", "로그인 안내 얼럿", "Alert", ["비로그인 상태에서 검색을 시도할 때마다 표시 (탭 이동만으로는 안 뜸)",
-                                                  "버튼은 OK 하나 · 문구 STALL_LOGIN_ALERT (표지 안내 ②)"])
+                                                  "버튼은 OK 하나",
+                                                  "KO 로그인 후 노점 검색을 이용할 수 있습니다. · EN Please log in to use Stall Shop search.",
+                                                  "PT Faça login para usar a busca de lojas. · ES Inicia sesión para usar la búsqueda de tiendas.",
+                                                  "버튼 KO 확인 · EN · PT OK · ES Aceptar"])
       + card("p5", "5", "OK", "Action", ["OK → 바로 로그인 페이지 → 로그인 후 노점 검색으로 복귀",
                                         "복귀 시 탭 · 검색 조건 유지 → Turnstile Success! 후 검색 (2 화면)"]))
 C2 = (card("p6", "6", "로그인 상태 헤더", "Header", ["계정명 + Logout만 표시", "Logout → 비로그인 상태(1 화면)로"])
@@ -190,15 +197,21 @@ C2 = (card("p6", "6", "로그인 상태 헤더", "Header", ["계정명 + Logout�
                                                  "진입 · 조회(검색 · 페이지 이동 · 상세)마다 실행 → Success! 토큰 1개로 조회 · 서버 검증",
                                                  "Cloudflare 가 요구하면 위젯 안에 체크박스 · 실패 → E2"]))
 C3 = (card("p8", "8", "조회 결과 (시세 조회 예시)", "List", ["결과 바(건수 · 정렬 · 개수 · 보기 전환) · 카드 구성은 현행 유지 · 거래 아이템 조회도 같은 규칙",
-                                            "조회마다 Turnstile 검증 + 계정(AID)별 조회 수 집계 → 2차 · 3차 초과 시 이용 제한 페이지(SCR-02)로 이동 · 카드 클릭 → 상세 팝업 (내용 현행 유지 · 열 때도 Turnstile · 조회 1회)",
+                                            "조회마다 Turnstile 검증 · 카드 클릭 → 상세 팝업 (내용 현행 유지 · 열 때도 Turnstile)",
                                             "로그아웃 상태로 조회 → 1 화면으로"])
-      + card("p9", "9", "페이지 이동", "Pager", ["페이지당 20개 고정 (주소의 limit 값 무시)",
-                                               "최대 50페이지 · 페이지 이동 · 정렬 · 개수 변경도 조회 1회 (Turnstile 실행 · 횟수 포함)"])
+      + card("p9", "9", "표시 개수", "Select", ["20 · 40 · 60 중 선택 (기본 20) → 바로 다시 조회",
+                                              "그 외 값 (주소 limit 조작 등) → E5 얼럿 · 조회 안 함 · 서버에서도 거절"])
+      + card("p10", "10", "페이지 이동", "Pager", ["최대 50페이지 · 페이지 이동 · 정렬 · 개수 변경도 조회 1회 (Turnstile 실행)"])
       + card("e1", "E1", "검색어 오류", "Case", ["2글자 미만 · 빈 검색 → 입력칸 아래 안내 · 검색 안 함"])
-      + card("e2", "E2", "보안 확인 실패", "Case", ["위젯 안 Retry → Turnstile 다시 실행 → 같은 조건 다시 조회", "10분 내 5회 실패 → 1시간 이용 제한 → 이용 제한 페이지(SCR-02)"])
-      + card("e3", "E3", "검색 결과 0건", "Case", ["현행 문구 유지 · 조회 횟수에는 포함"])
+      + card("e2", "E2", "보안 확인 실패", "Case", ["위젯 안 Retry → Turnstile 다시 실행 → 같은 조건 다시 조회"])
+      + card("e3", "E3", "검색 결과 0건", "Case", ["현행 문구 유지"])
       + card("e4", "E4", "Turnstile 확인 중", "Case", ["위젯 Success! 전까지 검색 버튼 비활성 · Enter 도 검색 안 됨",
-                                                      "조회가 끝나면 위젯 다시 실행 → Success! 뜨면 다음 검색 가능"]))
+                                                      "조회가 끝나면 위젯 다시 실행 → Success! 뜨면 다음 검색 가능"])
+      + card("e5", "E5", "비정상 검색 경로", "Case", ["20 · 40 · 60 이외 개수로 조회 시도 → 얼럿 · 조회 안 함",
+                                                     "OK → 얼럿 닫힘 · 보던 화면 유지 (주소로 바로 들어온 경우 검색 전 화면)",
+                                                     "KO 정상적인 검색 경로가 아닙니다. · EN This is not a valid search path.",
+                                                     "PT Este não é um caminho de busca válido. · ES Esta no es una ruta de búsqueda válida.",
+                                                     "버튼 KO 확인 · EN · PT OK · ES Aceptar"]))
 
 
 # ───────────────────────── 반응형 ─────────────────────────
@@ -260,7 +273,6 @@ html = f"""<!DOCTYPE html>
     <title>SCR-01 노점 검색 (거래 · 시세 조회) | RO 노점 검색 보안 강화 기획서</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="spec.css">
-    <!-- 문서 목록 — index.html 과 내용이 같아야 한다 -->
     <script>
 {TREE}
     </script>
@@ -298,5 +310,5 @@ html = f"""<!DOCTYPE html>
 </body>
 </html>
 """
-(D / "01_stall_search.html").write_text(html, encoding="utf-8")
+(D / "index.html").write_text(html, encoding="utf-8")
 print("ok", len(html))

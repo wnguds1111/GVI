@@ -5,22 +5,9 @@
         };
         window.DOC_TREE_OVERRIDE = [
             {
-                group: 'DOCUMENT INFO',
-                items: [
-                    { id: 'DOC-00', label: '차단 정책', href: 'index.html' }
-                ]
-            },
-            {
                 group: 'SCREEN STORYBOARD',
                 items: [
-                    { id: 'SCR-01', label: '노점 검색 (거래 · 시세 조회)', href: '01_stall_search.html' },
-                    { id: 'SCR-02', label: '이용 제한 페이지', href: '02_restrict.html' }
-                ]
-            },
-            {
-                group: 'ADMIN',
-                items: [
-                    { id: 'ADM-01', label: '계정블록 정보', href: '03_admin.html' }
+                    { id: 'SCR-01', label: '노점 검색 (거래 · 시세 조회)', href: 'index.html' }
                 ]
             }
         ];
